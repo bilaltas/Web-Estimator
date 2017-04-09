@@ -40,7 +40,7 @@ $this->bringdata();
 $delete = array("submit", "products" );
 
 
-		header('Location: '.$this->submit_link( $_GET['products'], 'ecommerce_images', $delete ) );
+		header('Location: '.$this->submitLink( $_GET['products'], 'ecommerce_images', $delete ) );
 		die();
 
 	}

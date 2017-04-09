@@ -285,7 +285,7 @@ foreach ($x as $y) {
 
 	$delete = array("submit", "adtn_submit");
 
-		header('Location: '.$this->submit_link( $result, 'results', $delete ) );
+		header('Location: '.$this->submitLink( $result, 'results', $delete ) );
 		die();
 
 
@@ -362,7 +362,7 @@ foreach ($x as $y) {
 	if ($there_is_a_value) $result="yes";
 		else  $result="no";
 
-		header('Location: '.str_replace("tmp_", "adtn_", $this->submit_link( $result, 'results', $delete ) ) );
+		header('Location: '.str_replace("tmp_", "adtn_", $this->submitLink( $result, 'results', $delete ) ) );
 		die();
 
 

@@ -69,7 +69,7 @@ $sttc_more_pages = $_GET['sttc_more_pages'];
 $counted = 1 + $sttc_aboutus + $sttc_privacy + $sttc_terms + $sttc_contactus + $sttc_more_pages; // RECALCULATE HERE!!!
 
 
-	header('Location: '.$this->submit_link( $counted, 'dynamic_pages', array("submit", "sttc_submit") ) );
+	header('Location: '.$this->submitLink( $counted, 'dynamic_pages', array("submit", "sttc_submit") ) );
 	die();
 
 
@@ -87,7 +87,7 @@ $tmp_more_pages = $_GET['tmp_more_pages'];
 
 $counted = 1 + $tmp_aboutus + $tmp_privacy + $tmp_terms + $tmp_contactus + $tmp_more_pages; // RECALCULATE HERE!!!
 
-	header('Location: '.str_replace("tmp_", "sttc_", $this->submit_link( $counted, 'dynamic_pages', array("submit", "tmp_submit", "sttc_more_pages", "sttc_aboutus", "sttc_privacy", "sttc_terms", "sttc_contactus") ) ) );
+	header('Location: '.str_replace("tmp_", "sttc_", $this->submitLink( $counted, 'dynamic_pages', array("submit", "tmp_submit", "sttc_more_pages", "sttc_aboutus", "sttc_privacy", "sttc_terms", "sttc_contactus") ) ) );
 	die();
 
 	}

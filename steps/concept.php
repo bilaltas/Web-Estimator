@@ -1,6 +1,6 @@
 <?php
 
-if ( $this->stepStatus("website") == "current" ) {
+if ( $this->stepStatus("concept") == "current" ) {
 
 ?>
 <div class="row">
@@ -38,7 +38,7 @@ foreach ($this->mainChoices as $mainChoiceTitleID => $mainChoiceTitle) {
 
 		echo '
 		<li'.($isDisabled ? " class='disabled'" : "").'>
-			<a href="'.($isDisabled ? "#" : $this->submit_link($choiceID, 'domain')).'" '.($isDisabled ? 'title="Coming Soon" data-toggle="tooltip" data-placement="left"' : "").'>'.$choiceName.'</a>
+			<a href="'.($isDisabled ? "#" : $this->submitLink($choiceID, 'domain')).'" '.($isDisabled ? 'title="Coming Soon" data-toggle="tooltip" data-placement="left"' : "").'>'.$choiceName.'</a>
 		</li>';
 
 	}

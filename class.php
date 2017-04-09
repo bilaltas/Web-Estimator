@@ -1,21 +1,26 @@
 <?php
 
-include('data.php');
-
 class WebEstimator {
 
-	// Temporary Data
-	var $mainChoices;
-	var $steps;
+	// The Data Connection
+	private $db;
+
+	// The Steps List
+	public $steps = array();
+
 
 	// == INIT ==================================================
 	function __construct() {
 		global $mainChoices, $steps;
 
-		$this->mainChoices = $mainChoices;
-		$this->steps = $steps;
-
 		session_start();
+
+		// DB Connect
+		$this->db = $this->dbConnect();
+
+		// List Steps
+		$this->steps = $this->listSteps();
+
 		// Login
 		if ( isset($_GET["login"]) && isset($_POST["login-name"]) && isset($_POST["login-pass"]) ) $this->logIn();
 
@@ -26,6 +31,47 @@ class WebEstimator {
 		ob_start();
 		include('view/main.php');
 		ob_end_flush();
+	}
+
+
+	// == DATA CONNECTION ==================================================
+	function dbConnect() {
+
+		$servername = "localhost";
+		$username = "root";
+		$password = "root";
+		$database = "aweb_estimator";
+
+		$conn_error = "";
+		try {
+		    $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
+		    // set the PDO error mode to exception
+		    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		    //echo "Connected successfully";
+		}
+		catch(PDOException $e) {
+			$conn_error = "Connection failed: " . $e->getMessage();
+			return $conn_error;
+		}
+
+		return $conn;
+
+	}
+
+
+	// == DB DISCONNECTION ==================================================
+	function dbDisconnect() {
+
+		$this->db = null;
+
+	}
+
+
+	// == DB QUERY ==================================================
+	function dbQuery($query) {
+
+		return $this->db->query($query);
+
 	}
 
 
@@ -97,8 +143,10 @@ class WebEstimator {
 			// STEP BAR
 			include("view/show_steps.php");
 
-			// SHOW PAGES
-			if ( file_exists("steps/".$this->currentStep().".php") ) include("steps/".$this->currentStep().".php");
+			// SHOW Questions
+			include("step_content.php");
+
+			//if ( file_exists("steps/".$this->stepSlug().".php") ) include("steps/".$this->stepSlug().".php");
 
 		}else {
 
@@ -109,24 +157,44 @@ class WebEstimator {
 	}
 
 
+	// == LIST STEPS ==================================================
+	function listSteps() {
+
+		$steps = array();
+		$stepNo = 1;
+		$steps_query = $this->dbQuery('SELECT * FROM steps WHERE main_choice_ID = '.$this->mainChoiceCategoryID().' OR main_choice_ID = '.$this->mainChoiceID().' ORDER BY step_order');
+		while ($step = $steps_query->fetch()) {
+
+			$steps[$stepNo] = array(
+								'step_name' => $step['step_name'],
+								'step_slug' => $step['step_slug']
+							);
+			$stepNo++;
+		}
+
+		return $steps;
+
+	}
+
+
 	// == CURRENT STEP ==================================================
-	function currentStep($step="") {
+	function stepSlug($stepSlug = "") {
 
-		if ($_SERVER["QUERY_STRING"]=="") { // If it's Home Page
+		if ($_SERVER["QUERY_STRING"] == "") { // If it's Home Page
 
-			if ($step!="" && $step=="website") {
+			if ($stepSlug!="" && $stepSlug=="concept") {
 				return true;
-			}elseif ($step!="" && $step!="website") {
+			}elseif ($stepSlug!="" && $stepSlug!="concept") {
 				return false;
 			} else {
-				return "website";
+				return "concept";
 			}
 
 		} elseif ( isset($_GET['go']) ) { // ...&go=xxx
 
-			if ($step!="" && $step==$_GET['go']) {
+			if ($stepSlug!="" && $stepSlug==$_GET['go']) {
 				return true;
-			}elseif ($step!="" && $step!=$_GET['go']) {
+			}elseif ($stepSlug!="" && $stepSlug!=$_GET['go']) {
 				return false;
 			} else {
 				return $_GET['go'];
@@ -135,70 +203,80 @@ class WebEstimator {
 		} else { // ...&xxx=current...
 
 			$new_gets = array_flip($_GET);
-			//print_r( $new_gets );
-//			if (isset($new_gets['current']) ) {
 
-				if ($step!="" && $step==$new_gets['current']) {
-					return true;
-				}elseif ($step!="" && $step!=$new_gets['current']) {
-					return false;
-				} else {
-					return $new_gets['current'];
-				}
-
-/*
-			} else {
+			if ($stepSlug!="" && $stepSlug==$new_gets['current']) {
+				return true;
+			}elseif ($stepSlug!="" && $stepSlug!=$new_gets['current']) {
 				return false;
+			} else {
+				return $new_gets['current'];
 			}
-*/
 
 		}
 
 	}
 
 
-	// == GET SELECTED SITE TYPE ==================================================
-	function selectedOption() {
+	// == CURRENT STEP ID ==================================================
+	function stepID( $stepSlug = "" ) {
 
-		if ( isset($_GET[$this->selectedMainChoice()]) )
-			return $_GET[$this->selectedMainChoice()];
-		else
-			return "";
+		$stmt = $this->db->prepare("SELECT * FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
+		$stmt->execute();
+		$row = $stmt->fetch();
 
-	}
-
-
-	// == GET SELECTED MAIN CHOICE ==================================================
-	function selectedMainChoice() {
-
-		if ( isset($_GET['website']) )
-			return "website";
-		else if ( isset($_GET['feature']) )
-			return "feature";
-		else
-			return "website";
+		return $row['step_ID'];
 
 	}
 
 
 	// == STEP TITLE ==================================================
-	function stepTitle( $step="" ) {
+	function stepTitle($stepSlug = "") {
 
-		if ( isset($this->steps[$this->selectedMainChoice()][$this->selectedOption()]) ) {
+		$stmt = $this->db->prepare("SELECT * FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
+		$stmt->execute();
+		$row = $stmt->fetch();
 
-			if ($step!="") {
-				return $this->steps[$this->selectedMainChoice()][$this->selectedOption()][ $step ];
-			} else {
-				if ( isset($this->steps[$this->selectedMainChoice()][$this->selectedOption()][ $this->currentStep() ]) ) {
-					return $this->steps[$this->selectedMainChoice()][$this->selectedOption()][ $this->currentStep() ];
-				} else {
-					return "";
-				}
+		return $row['step_name'];
+
+	}
+
+
+	// == CURRENT STEP NO ==================================================
+	function stepNo($stepSlug = "") {
+
+		if ($step == "") $stepSlug = $this->stepSlug();
+
+		foreach ($this->steps as $no => $step) {
+
+			if ($step['step_slug'] == $stepSlug ) {
+				return $no;
+				break;
 			}
 
-		} else {
-			return "";
 		}
+
+	}
+
+
+	// == NEXT STEP ==================================================
+	function nextStepSlug($stepSlug = "") {
+
+		if ($step == "") $stepSlug = $this->stepSlug();
+
+		return $this->steps[ $this->stepNo($stepSlug) + 1 ]['step_slug'];
+
+
+	}
+
+
+	// == MAIN CHOICE TITLE ==================================================
+	function mainChoiceTitle( $main_choice = "" ) {
+
+		$stmt = $this->db->prepare("SELECT * FROM main_choices WHERE main_choice_slug = '".($main_choice != '' ? $main_choice : $this->mainChoice())."' LIMIT 1");
+		$stmt->execute();
+		$row = $stmt->fetch();
+
+		return $row['main_choice_name'];
 
 	}
 
@@ -206,17 +284,68 @@ class WebEstimator {
 	// == STEP NUMBER ==================================================
 	function stepNumber( $step="" ) {
 
+		/*
 		if ($step == "")
-			$step = $this->currentStep();
+			$step = $this->stepSlug();
 
 		$count = 1;
-		foreach( $this->steps[$this->selectedMainChoice()][$this->selectedOption()] as $stepp => $titlee) {
+		foreach( $this->steps[$this->mainChoice()][$this->selectedOption()] as $stepp => $titlee) {
 			if ($stepp==$step) {
 				return $count;
 				break;
 			}
 			$count++;
 		}
+		*/
+
+		return "1";
+
+	}
+
+
+	// == GET SELECTED MAIN CHOICE ==================================================
+	function mainChoice() {
+
+		if ( isset($_GET['concept']) )
+			return $_GET['concept'];
+		else
+			return "ecommerce";
+
+	}
+
+
+	// == GET SELECTED MAIN CHOICE ID ==================================================
+	function mainChoiceID() {
+
+		$stmt = $this->db->prepare("SELECT main_choice_ID FROM main_choices WHERE main_choice_slug = '".$this->mainChoice()."' LIMIT 1");
+		$stmt->execute();
+		$row = $stmt->fetch();
+
+		return $row['main_choice_ID'];
+
+	}
+
+
+	// == GET SELECTED MAIN CHOICE CATEGORY ==================================================
+	function mainChoiceCategory() {
+
+		$stmt = $this->db->prepare("SELECT main_choice_name FROM main_choices WHERE main_choice_ID = '".$this->mainChoiceCategoryID()."' LIMIT 1");
+		$stmt->execute();
+		$row = $stmt->fetch();
+
+		return $row['main_choice_name'];
+
+	}
+
+
+	// == GET SELECTED MAIN CHOICE CATEGORY ID ==================================================
+	function mainChoiceCategoryID() {
+
+		$stmt = $this->db->prepare("SELECT main_choice_parent_ID FROM main_choices WHERE main_choice_ID = '".$this->mainChoiceID()."' LIMIT 1");
+		$stmt->execute();
+		$row = $stmt->fetch();
+
+		return $row['main_choice_parent_ID'];
 
 	}
 
@@ -249,7 +378,47 @@ class WebEstimator {
 
 	// == IS FIRST STEP? ==================================================
 	function isFirstStep($step) {
-		return ($step == "website") ? true : false;
+		return ($step == "concept") ? true : false;
+	}
+
+
+	// == PROGRESS BAR LINKS ==================================================
+	function stepLink($step) {
+
+		$url = $this->currentPageURL();
+
+		if ( $this->stepSlug() == $step ) { // Avoid if the destination is our current step
+
+			$url = "#";
+
+		} elseif ( $this->stepStatus($step) == "notyet" ) { // Avoid if the destination is not seen yet
+
+			$url = "#";
+
+		} else {
+
+			if( isset($_GET[$step]) && $_GET[$step] == "" ) { // ...&destination...    ->    Put "=current" to destination
+
+				$url = $this->removeQueryArg( "go", $url );
+				$url = $this->addQueryArg( $step, "current", $url );
+
+			} elseif ( isset($_GET[$step]) && $_GET[$step] != "" ) { // ...&mystep=current&destination=xxx    ->    Put "&go=destination"
+
+				$url = $this->removeQueryArg( $this->stepSlug(), $url );
+
+				if ( isset($_GET[$this->stepSlug()]) && $_GET[$this->stepSlug()] != "current" )
+					$url = $this->addQueryArg( $this->stepSlug(), $_GET[$this->stepSlug()], $url );
+				else
+					$url = $this->addQueryArg( $this->stepSlug(), "", $url );
+
+				$url = $this->addQueryArg( "go", $step, $url );
+
+			}
+
+		}
+
+		return $url;
+
 	}
 
 
@@ -313,48 +482,8 @@ class WebEstimator {
 	}
 
 
-	// == PROGRESS BAR LINKS ==================================================
-	function stepLink($step) {
-
-		$url = $this->currentPageURL();
-
-		if ( $this->currentStep() == $step ) { // Avoid if the destination is our current step
-
-			$url = "#";
-
-		} elseif ( $this->stepStatus($step) == "notyet" ) { // Avoid if the destination is not seen yet
-
-			$url = "#";
-
-		} else {
-
-			if( isset($_GET[$step]) && $_GET[$step] == "" ) { // ...&destination...    ->    Put "=current" to destination
-
-				$url = $this->removeQueryArg( "go", $url );
-				$url = $this->addQueryArg( $step, "current", $url );
-
-			} elseif ( isset($_GET[$step]) && $_GET[$step] != "" ) { // ...&mystep=current&destination=xxx    ->    Put "&go=destination"
-
-				$url = $this->removeQueryArg( $this->currentStep(), $url );
-
-				if ( isset($_GET[$this->currentStep()]) && $_GET[$this->currentStep()] != "current" )
-					$url = $this->addQueryArg( $this->currentStep(), $_GET[$this->currentStep()], $url );
-				else
-					$url = $this->addQueryArg( $this->currentStep(), "", $url );
-
-				$url = $this->addQueryArg( "go", $step, $url );
-
-			}
-
-		}
-
-		return $url;
-
-	}
-
-
 	// == SUBMIT LINK ==================================================
-	function submit_link($data, $next_step, $delete = "") {
+	function submitLink($data, $next_step, $delete = "") {
 
 		$url = $this->currentPageURL();
 
@@ -367,7 +496,7 @@ class WebEstimator {
 
 
 		// Always add the data to current step
-		$url = $this->addQueryArg( $this->currentStep(), $data, $url );
+		$url = $this->addQueryArg( $this->stepSlug(), $data, $url );
 
 
 		// If destination is not empty
@@ -387,11 +516,25 @@ class WebEstimator {
 	}
 
 
+	// == GET INPUT VALUE  ==================================================
+	function inputValue($inputNo, $step = "") {
+
+		$values = explode(',', $_GET[($step != '' ? $step : $this->stepSlug())]);
+
+		if ( !isset($values[$inputNo]) )
+			return false;
+
+		return $values[$inputNo];
+
+
+	}
+
+
 	// == PREFIXER ==================================================
 	function prefixer($prefix="") {
 
-		if ($prefix!="") return (isset($_GET[$this->currentStep()]) && $_GET[$this->currentStep()]!="current" ? 'tmp_' : $prefix);
-		else return  (isset($_GET[$this->currentStep()]) && $_GET[$this->currentStep()]!="current" ? 'tmp_' : prfx());
+		if ($prefix!="") return (isset($_GET[$this->stepSlug()]) && $_GET[$this->stepSlug()]!="current" ? 'tmp_' : $prefix);
+		else return  (isset($_GET[$this->stepSlug()]) && $_GET[$this->stepSlug()]!="current" ? 'tmp_' : prfx());
 
 	}
 

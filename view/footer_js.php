@@ -27,7 +27,7 @@ if ( $_SERVER["QUERY_STRING"] != "" ) {
 
 
 <?php
-if ( $this->currentStep("additional") || $this->currentStep("dynamic_pages") ) {
+if ( $this->stepSlug("additional") || $this->stepSlug("dynamic_pages") ) {
 ?>
 // Additional Features and Services
 

@@ -58,10 +58,10 @@ $this->bringdata();
 
 
 		if ( $_GET['images']=="half" ) {
-			header('Location: '.$this->submit_link( $_GET['images'], 'ecommerce_photography', array("submit", "images" ) ) );
+			header('Location: '.$this->submitLink( $_GET['images'], 'ecommerce_photography', array("submit", "images" ) ) );
 			die();
 		}else {
-			header('Location: '.$this->submit_link( $_GET['images'], 'ecommerce_payment', array("submit", "images", "ecommerce_photography" ) ) );
+			header('Location: '.$this->submitLink( $_GET['images'], 'ecommerce_payment', array("submit", "images", "ecommerce_photography" ) ) );
 			die();
 		}
 

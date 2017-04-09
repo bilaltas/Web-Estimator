@@ -20,6 +20,9 @@ $this->bringdata();
 	if ( !isset($_GET['domaininf']) ) {
 ?>
 <h3>Will you provide us a domain to use on your project?</h3>
+
+
+
 <div class="form-group">
  <label class="radio primary">
     <input type="radio" data-toggle="radio" name="domaininf" id="domainy" value="yes" data-radiocheck-toggle="radio" <?=$_GET['domain']=="yes" ? 'checked="" ' : ''?> required>
@@ -35,7 +38,7 @@ $this->bringdata();
 <?php
 	} else {
 
-		header('Location: '.$this->submit_link( $_GET['domaininf'], 'server', array("domaininf") ) );
+		header('Location: '.$this->submitLink( $_GET['domaininf'], 'server', array("domaininf") ) );
 		die();
 
 	}

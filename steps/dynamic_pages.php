@@ -95,10 +95,10 @@ $this->bringdata();
 		if ( !isset($_GET[prfx().'blog']) && !isset($_GET[prfx().'portfolio']) ) { $counted = "no"; }
 
 			if ( $_GET['website']=="ecommerce" ) {
-				header('Location: '.$this->submit_link( $counted, 'ecommerce_products', $delete ) );
+				header('Location: '.$this->submitLink( $counted, 'ecommerce_products', $delete ) );
 				die();
 			}elseif ( $_GET['website']=="news" ) {
-				header('Location: '.$this->submit_link( $counted, 'news_blabla', $delete ) );
+				header('Location: '.$this->submitLink( $counted, 'news_blabla', $delete ) );
 				die();
 			}
 
@@ -118,10 +118,10 @@ $this->bringdata();
 		if ( !isset($_GET['tmp_blog']) && !isset($_GET['tmp_portfolio']) ) { $counted = "no"; }
 
 			if ( $_GET['website']=="ecommerce" ) {
-				header('Location: '.str_replace("tmp_", prfx(), $this->submit_link( $counted, 'ecommerce_products', $delete ) ) );
+				header('Location: '.str_replace("tmp_", prfx(), $this->submitLink( $counted, 'ecommerce_products', $delete ) ) );
 				die();
 			}elseif ( $_GET['website']=="news" ) {
-				header('Location: '.str_replace("tmp_", prfx(), $this->submit_link( $counted, 'news_blabla', $delete ) ) );
+				header('Location: '.str_replace("tmp_", prfx(), $this->submitLink( $counted, 'news_blabla', $delete ) ) );
 				die();
 			}
 

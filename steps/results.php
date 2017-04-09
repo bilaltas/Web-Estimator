@@ -40,7 +40,7 @@ $delete = array("submit", "blog", "portfolio", "blog_posts", "portfolio_items" )
 $counted = $_GET['blog_posts'] + $_GET['portfolio_items']; // RECALCULATE HERE!!!
 
 
-		header('Location: '.$this->submit_link( $counted, 'results', $delete ) );
+		header('Location: '.$this->submitLink( $counted, 'results', $delete ) );
 		die();
 	}
 ?>

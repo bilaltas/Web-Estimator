@@ -43,12 +43,12 @@ $this->bringdata();
 <?php
 	} elseif ( $_GET['hosting'] == "linux" ) {
 
-		header('Location: '.$this->submit_link( $_GET['hosting'], 'satisfaction', array("hosting") ) );
+		header('Location: '.$this->submitLink( $_GET['hosting'], 'satisfaction', array("hosting") ) );
 		die();
 
 	} elseif ( isset($_GET['hosting']) && $_GET['hosting'] != "linux" ) {
 
-		header('Location: '.$this->submit_link( $_GET['hosting'], 'static_pages', array("hosting", "satisfaction") ) );
+		header('Location: '.$this->submitLink( $_GET['hosting'], 'static_pages', array("hosting", "satisfaction") ) );
 		die();
 
 	}

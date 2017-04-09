@@ -60,7 +60,7 @@ $this->bringdata();
 
 		$delete = array("submit", "pymnt_submit", "ssl");
 
-		header('Location: '.$this->submit_link( "ssl".$_GET['ssl'], 'additional', $delete ) );
+		header('Location: '.$this->submitLink( "ssl".$_GET['ssl'], 'additional', $delete ) );
 		die();
 
 
@@ -71,7 +71,7 @@ $this->bringdata();
 
 		$delete = array("submit", "tmp_submit", "ssl", "pymnt_payment_paypal", "pymnt_payment_card", "pymnt_payment_other"  );
 
-		header('Location: '.str_replace("tmp_", "pymnt_", $this->submit_link( "ssl".$_GET['ssl'], 'additional', $delete ) ) );
+		header('Location: '.str_replace("tmp_", "pymnt_", $this->submitLink( "ssl".$_GET['ssl'], 'additional', $delete ) ) );
 		die();
 
 

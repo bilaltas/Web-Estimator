@@ -35,7 +35,7 @@ $this->bringdata();
 <?php
 	} else {
 
-		header('Location: '.$this->submit_link( $_GET['satisfact'], 'static_pages', array("satisfact") ) );
+		header('Location: '.$this->submitLink( $_GET['satisfact'], 'static_pages', array("satisfact") ) );
 		die();
 
 	}

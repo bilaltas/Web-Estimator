@@ -2,35 +2,41 @@
 
 <h1 id="big-title"><?= $this->stepTitle() ?></h1>
 
+<?php
+	//print_r( $this->steps );
+?>
+
 <div class="progress" style="margin-bottom: 40px;">
 
 
 <?php
 
-$count = 1;
-$stepStatus = "";
-foreach($this->steps[$this->selectedMainChoice()] as $stepCats) {
-	foreach ($stepCats as $stepCatID => $stepCat) {
+foreach ($this->steps as $stepNo => $step) {
 
-		// Color the bars
-		if ( $this->stepStatus($stepCatID) == "current" )
-			$stepStatus = "";
-		elseif ( $this->stepStatus($stepCatID) == "skipped" )
-			$stepStatus = "progress-bar-warning";
-		elseif ( $this->stepStatus($stepCatID) == "done" )
-			$stepStatus = "progress-bar-success";
-		elseif ( $this->stepStatus($stepCatID) == "notyet" )
-			$stepStatus = "progress-bar-info";
+	// Color the bars
+	if ( $this->stepStatus($step['step_slug']) == "current" )
+		$stepStatus = "";
+	elseif ( $this->stepStatus($step['step_slug']) == "skipped" )
+		$stepStatus = "progress-bar-warning";
+	elseif ( $this->stepStatus($step['step_slug']) == "done" )
+		$stepStatus = "progress-bar-success";
+	elseif ( $this->stepStatus($step['step_slug']) == "notyet" )
+		$stepStatus = "progress-bar-info";
+	else
+		$stepStatus = "";
 
-		// Print
-		echo '<div class="progress-bar '.$stepStatus.'">
-				<a href="'.$this->stepLink($stepCatID).'" title="'.$stepCat.'" data-toggle="tooltip" data-placement="bottom">Step '.$count.'</a>
-			</div>';
 
-		$count++;
 
-	}
+	echo '<div class="progress-bar '.$stepStatus.'">
+			<a href="'.$this->stepLink($step['step_slug']).'" title="'.$step['step_name'].'" data-toggle="tooltip" data-placement="bottom">Step '.$stepNo.'</a>
+		</div>';
+
+
 }
+
+	echo '<div class="progress-bar progress-bar-info">
+			<a href="#finish_link" title="Results" data-toggle="tooltip" data-placement="bottom">Step '.++$stepNo.'</a>
+		</div>';
 
 ?>
 
