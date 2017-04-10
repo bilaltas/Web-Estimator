@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Web Estimator <?= $_SERVER["QUERY_STRING"] == "" ? "- BETA" : ( $this->stepNumber() == "" ? "" : "- ".$this->stepNumber()."." )." ".$this->stepTitle() ?></title>
+    <title>Web Estimator <?= $_SERVER["QUERY_STRING"] == "" ? "- BETA" : ( $this->stepNo() == "" ? "" : "- ".$this->stepNo()."." )." ".$this->stepTitle() ?></title>
     <meta name="description" content="Web Estimator clearly calculates cost and time to build any website project for free in a few minutes."/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 

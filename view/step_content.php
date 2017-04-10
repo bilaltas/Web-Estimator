@@ -180,24 +180,25 @@ else {
 <?php
 
 	// Temporary Data sent?
-	$data_to_send = "";
-	foreach ($_GET as $key => $value) {
+	if ( isset($_GET['action']) ) {
 
-		if ( in_array($key, $temp_data) && $value != "" ) {
+		// Prepare the data
+		$data_to_send = "";
+		foreach ($_GET as $key => $value) {
 
-			$data_to_send .= $value.",";
+			if ( in_array($key, $temp_data) && $value != "" ) $data_to_send .= $value.",";
+
+			if (end($_GET) == $value) $data_to_send = substr($data_to_send, 0, -1);
 
 		}
 
-		if (end($_GET) == $value) $data_to_send = substr($data_to_send, 0, -1);
-
-	}
-
-	if ( isset($_GET['action']) ) {
+		// If nothing entered
 		if ($data_to_send == "") $data_to_send = "na";
 
+		// Go to the next step
 		header('Location: '.$this->submitLink( $data_to_send, $this->nextStepSlug(), $temp_data ) );
 		die();
+
 	}
 
 

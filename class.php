@@ -31,6 +31,9 @@ class WebEstimator {
 		ob_start();
 		include('view/main.php');
 		ob_end_flush();
+
+		// DB Disconnect
+		$this->db = $this->dbDisconnect();
 	}
 
 
@@ -144,9 +147,7 @@ class WebEstimator {
 			include("view/show_steps.php");
 
 			// SHOW Questions
-			include("step_content.php");
-
-			//if ( file_exists("steps/".$this->stepSlug().".php") ) include("steps/".$this->stepSlug().".php");
+			include("view/step_content.php");
 
 		}else {
 
@@ -220,8 +221,7 @@ class WebEstimator {
 	// == CURRENT STEP ID ==================================================
 	function stepID( $stepSlug = "" ) {
 
-		$stmt = $this->db->prepare("SELECT * FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
-		$stmt->execute();
+		$stmt = $this->dbQuery("SELECT * FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['step_ID'];
@@ -232,8 +232,7 @@ class WebEstimator {
 	// == STEP TITLE ==================================================
 	function stepTitle($stepSlug = "") {
 
-		$stmt = $this->db->prepare("SELECT * FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
-		$stmt->execute();
+		$stmt = $this->dbQuery("SELECT * FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['step_name'];
@@ -241,10 +240,10 @@ class WebEstimator {
 	}
 
 
-	// == CURRENT STEP NO ==================================================
+	// == STEP NUMBER ==================================================
 	function stepNo($stepSlug = "") {
 
-		if ($step == "") $stepSlug = $this->stepSlug();
+		if ($stepSlug == "") $stepSlug = $this->stepSlug();
 
 		foreach ($this->steps as $no => $step) {
 
@@ -272,33 +271,10 @@ class WebEstimator {
 	// == MAIN CHOICE TITLE ==================================================
 	function mainChoiceTitle( $main_choice = "" ) {
 
-		$stmt = $this->db->prepare("SELECT * FROM main_choices WHERE main_choice_slug = '".($main_choice != '' ? $main_choice : $this->mainChoice())."' LIMIT 1");
-		$stmt->execute();
+		$stmt = $this->dbQuery("SELECT * FROM main_choices WHERE main_choice_slug = '".($main_choice != '' ? $main_choice : $this->mainChoice())."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['main_choice_name'];
-
-	}
-
-
-	// == STEP NUMBER ==================================================
-	function stepNumber( $step="" ) {
-
-		/*
-		if ($step == "")
-			$step = $this->stepSlug();
-
-		$count = 1;
-		foreach( $this->steps[$this->mainChoice()][$this->selectedOption()] as $stepp => $titlee) {
-			if ($stepp==$step) {
-				return $count;
-				break;
-			}
-			$count++;
-		}
-		*/
-
-		return "1";
 
 	}
 
@@ -317,8 +293,7 @@ class WebEstimator {
 	// == GET SELECTED MAIN CHOICE ID ==================================================
 	function mainChoiceID() {
 
-		$stmt = $this->db->prepare("SELECT main_choice_ID FROM main_choices WHERE main_choice_slug = '".$this->mainChoice()."' LIMIT 1");
-		$stmt->execute();
+		$stmt = $this->dbQuery("SELECT main_choice_ID FROM main_choices WHERE main_choice_slug = '".$this->mainChoice()."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['main_choice_ID'];
@@ -329,8 +304,7 @@ class WebEstimator {
 	// == GET SELECTED MAIN CHOICE CATEGORY ==================================================
 	function mainChoiceCategory() {
 
-		$stmt = $this->db->prepare("SELECT main_choice_name FROM main_choices WHERE main_choice_ID = '".$this->mainChoiceCategoryID()."' LIMIT 1");
-		$stmt->execute();
+		$stmt = $this->dbQuery("SELECT main_choice_name FROM main_choices WHERE main_choice_ID = '".$this->mainChoiceCategoryID()."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['main_choice_name'];
@@ -341,8 +315,7 @@ class WebEstimator {
 	// == GET SELECTED MAIN CHOICE CATEGORY ID ==================================================
 	function mainChoiceCategoryID() {
 
-		$stmt = $this->db->prepare("SELECT main_choice_parent_ID FROM main_choices WHERE main_choice_ID = '".$this->mainChoiceID()."' LIMIT 1");
-		$stmt->execute();
+		$stmt = $this->dbQuery("SELECT main_choice_parent_ID FROM main_choices WHERE main_choice_ID = '".$this->mainChoiceID()."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['main_choice_parent_ID'];
@@ -522,68 +495,6 @@ class WebEstimator {
 		$values = explode(',', $_GET[($step != '' ? $step : $this->stepSlug())]);
 
 		return $values;
-
-	}
-
-
-	// == PREFIXER ==================================================
-	function prefixer($prefix="") {
-
-		if ($prefix!="") return (isset($_GET[$this->stepSlug()]) && $_GET[$this->stepSlug()]!="current" ? 'tmp_' : $prefix);
-		else return  (isset($_GET[$this->stepSlug()]) && $_GET[$this->stepSlug()]!="current" ? 'tmp_' : prfx());
-
-	}
-
-
-	// == DISABLER ==================================================
-	function disabler($id) {
-
-		if ( function_exists( 'prfx' ) ) return (isset($_GET[prfx().$id]) && $_GET[prfx().$id]!="" ? '' : 'disabled');
-		else return (isset($_GET[$id]) && $_GET[$id]!="" ? '' : 'disabled');
-
-	}
-
-
-	// == HIDER ==================================================
-	function hider($id) {
-
-		if ( function_exists( 'prfx' ) ) return (isset($_GET[prfx().$id]) && $_GET[prfx().$id]!="" ? 'block' : 'none');
-		else return (isset($_GET[$id]) && $_GET[$id]!="" ? 'block' : 'none');
-
-	}
-
-
-	// == VALUER ==================================================
-	function valuer($id, $default) {
-
-		if ( function_exists( 'prfx' ) ) return (isset($_GET[prfx().$id]) && $_GET[prfx().$id]!="" && $_GET[prfx().$id]!="current" ? $_GET[prfx().$id] : $default);
-		else return (isset($_GET[$id]) && $_GET[$id]!="" && $_GET[$id]!="current" ? $_GET[$id] : $default);
-
-	}
-
-
-	// == CHECKER ==================================================
-	function checker($id) {
-
-		if ( function_exists( 'prfx' ) ) return (isset($_GET[prfx().$id]) && $_GET[prfx().$id]!="" ? 'checked="" ' : '');
-		else return (isset($_GET[$id]) && $_GET[$id]!="" ? 'checked="" ' : '');
-
-	}
-
-
-	// == RADIO CHECKER ==================================================
-	function radiochecker($id, $answer) {
-
-		if ( function_exists( 'prfx' ) ) return (isset($_GET[prfx().$id]) && $_GET[prfx().$id]==$answer ? 'checked="" ' : '');
-		else return (isset($_GET[$id]) && $_GET[$id]==$answer ? 'checked="" ' : '');
-
-	}
-
-
-	// == NAMER ==================================================
-	function namer($id) {
-
-		return $this->prefixer().$id;
 
 	}
 
