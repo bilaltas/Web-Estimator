@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 10, 2017 at 01:59 AM
+-- Generation Time: Apr 10, 2017 at 03:22 AM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -73,12 +73,18 @@ CREATE TABLE `inputs` (
 --
 
 INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_description`, `input_value`, `input_required`, `input_time`, `input_type`, `field_ID`) VALUES
-(1, 'domainf', 'Yes, I already have my website\'s domain', '', 'yes', 1, 0, 'radio', 1),
-(2, 'domainf', 'No, we will buy a new domain', '', 'no', 1, 15, 'radio', 1),
+(1, 'domain', 'Yes, I already have my website\'s domain', '', 'yes', 1, 0, 'radio', 1),
+(2, 'domain', 'No, we will buy a new domain', '', 'no', 1, 15, 'radio', 1),
 (5, 'hosting', 'Yes, It is a <b>Linux Hosting</b>', '', 'linux', 1, 0, 'radio', 2),
 (6, 'hosting', 'Yes, It is a <b>Windows Hosting</b>', '', 'windows', 1, 30, 'radio', 2),
 (7, 'hosting', 'Other or not sure', '', 'other', 1, 40, 'radio', 2),
-(8, 'hosting', 'No, we will buy a new hosting', '', 'no', 1, 30, 'radio', 2);
+(8, 'hosting', 'No, we will buy a new hosting', '', 'no', 1, 30, 'radio', 2),
+(9, 'home', 'Home Page', '', 'home', 1, 360, 'checkbox', 3),
+(10, 'about', 'About Us Page', '', 'about', 0, 60, 'checkbox', 3),
+(11, 'privacy', 'Privacy Policy Page', '', 'privacy', 0, 40, 'checkbox', 3),
+(12, 'terms', 'Terms and Conditions Page', '', 'terms', 0, 40, 'checkbox', 3),
+(13, 'contact', 'Contact Us Page', '', 'contact', 0, 60, 'checkbox', 3),
+(14, 'more_static', 'and', 'more custom static page(s)', '0', 0, 60, 'number', 3);
 
 -- --------------------------------------------------------
 
@@ -193,7 +199,7 @@ ALTER TABLE `fields`
 -- AUTO_INCREMENT for table `inputs`
 --
 ALTER TABLE `inputs`
-  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `main_choices`
 --

@@ -61,13 +61,18 @@ else {
 
 <?php
 	// 1. Bring the fields belong to this step
-	$temp_data = array();
+	$temp_data = array('action');
 	$inputNo = 0;
 	$fields_query = $this->dbQuery("SELECT * FROM fields WHERE step_ID = ".$this->stepID());
 	while ($field = $fields_query->fetch()) {
 ?>
 
-		<h3><?=$field['field_name']?></h3>
+		<h3>
+			<?php
+			echo $field['field_name'];
+			if (!$field['field_required']) echo '<br/><span style="color: #ECF0F1;">(Optional)</span>';
+			?>
+		</h3>
 
 		<div class="form-group">
 
@@ -78,19 +83,19 @@ else {
 		while ($input = $inputs_query->fetch()) {
 
 			// Collect the temp data
-			$temp_data[] = $input['input_slug'];
+			$temp_data[] = "t_".$input['input_slug'];
 
 			if ($input['input_type'] == "radio") {
 
 		?>
 				<label class="radio primary">
 				    <input
-				    	type="radio"
+                		type="<?=$input['input_type']?>"
 				    	data-toggle="radio"
-				    	name="<?=$input['input_slug']?>"
+				    	name="t_<?=$input['input_slug']?>"
 				    	value="<?=$input['input_value']?>"
 				    	id="<?=$input['input_slug']?>"
-				    	<?=$this->inputValue($inputNo) == $input['input_value'] ? 'checked' : ''?>
+				    	<?=in_array($input['input_value'], $this->inputValues()) ? 'checked' : ''?>
 				    	<?=$input['input_required'] ? 'required' : ''?>
 				    >
 				    <?=$input['input_name']?>
@@ -101,15 +106,49 @@ else {
 				//$inputNo++;
 
 			} elseif ($input['input_type'] == "checkbox") {
+
+				// For disabled ones
+				if ($input['input_required']) $inputNo--;
 			?>
+
+				<label class="checkbox">
+                	<input
+                		type="<?=$input['input_type']?>"
+                		data-toggle="checkbox"
+				    	name="t_<?=$input['input_slug']?>"
+				    	value="<?=$input['input_value']?>"
+				    	id="<?=$input['input_slug']?>"
+				    	<?=in_array($input['input_value'], $this->inputValues()) ? 'checked' : ''?>
+				    	<?=$input['input_required'] ? 'disabled checked' : ''?>
+                	>
+					<?=$input['input_name']?>
+				</label>
 
 
 			<?php
 
 				$inputNo++;
 
-			} elseif ($input['input_type'] == "numbers") {
+			} elseif ($input['input_type'] == "number") {
 			?>
+
+
+				<label>
+					<?=$input['input_name']?>
+                	<input
+                		class="form-control input-hg"
+                		style="width: 100px;"
+                		type="<?=$input['input_type']?>"
+                		data-toggle="checkbox"
+				    	name="<?=$input['input_slug']?>"
+				    	value="<?=isset($_GET[ $input['input_slug'] ]) ? $_GET[ $input['input_slug'] ] : $input['input_value']?>"
+				    	min="0"
+				    	id="<?=$input['input_slug']?>"
+				    	<?=in_array($input['input_value'], $this->inputValues()) ? 'checked' : ''?>
+				    	<?=$input['input_required'] ? 'disabled' : ''?>
+                	>
+					<?=$input['input_description']?>
+				</label>
 
 
 			<?php
@@ -133,7 +172,7 @@ else {
 	} // Field Loop
 ?>
 
-		<button type="submit" class="btn btn-sm btn-primary">Continue</button>
+		<button type="submit" name="action" class="btn btn-sm btn-primary">Continue</button>
 
 
 	</form>
@@ -144,16 +183,18 @@ else {
 	$data_to_send = "";
 	foreach ($_GET as $key => $value) {
 
-		if ( in_array($key, $temp_data) ) {
+		if ( in_array($key, $temp_data) && $value != "" ) {
 
 			$data_to_send .= $value.",";
 
 		}
 
+		if (end($_GET) == $value) $data_to_send = substr($data_to_send, 0, -1);
+
 	}
 
-	if ( $data_to_send != "" ) {
-		$data_to_send = substr($data_to_send, 0, -1);
+	if ( isset($_GET['action']) ) {
+		if ($data_to_send == "") $data_to_send = "na";
 
 		header('Location: '.$this->submitLink( $data_to_send, $this->nextStepSlug(), $temp_data ) );
 		die();

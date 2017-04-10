@@ -517,15 +517,11 @@ class WebEstimator {
 
 
 	// == GET INPUT VALUE  ==================================================
-	function inputValue($inputNo, $step = "") {
+	function inputValues($step = "") {
 
 		$values = explode(',', $_GET[($step != '' ? $step : $this->stepSlug())]);
 
-		if ( !isset($values[$inputNo]) )
-			return false;
-
-		return $values[$inputNo];
-
+		return $values;
 
 	}
 
