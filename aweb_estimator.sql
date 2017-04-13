@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 13, 2017 at 07:50 PM
+-- Generation Time: Apr 14, 2017 at 12:44 AM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -100,7 +100,20 @@ INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_description
 (24, 'ecommerce_payment_card', 'Credit Card Direct Payment (Needs some merchandise information)', '', 'card', 0, 0, 360, 'checkbox', NULL, 0, 8),
 (25, 'ecommerce_payment_other', 'Others (Wire, Pay on Delivery, etc. )', '', 'other', 0, 0, 360, 'checkbox', NULL, 0, 8),
 (26, 'ecommerce_ssl', 'Yes, I do.', '', 'yes', 1, 0, 15, 'radio', NULL, 1, 9),
-(27, 'ecommerce_ssl', 'No, I don\'t want it.', '', 'no', 1, 0, 0, 'radio', NULL, 1, 9);
+(27, 'ecommerce_ssl', 'No, I don\'t want it.', '', 'no', 1, 0, 0, 'radio', NULL, 1, 9),
+(28, 'logo', 'Logo Design', 'Description', 'logo', 0, 0, 500, 'checkbox', NULL, 0, 10),
+(29, 'underconstruction', 'Custom Under Construction Page', 'Description', 'underconstruction', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(30, 'content', 'Content Writing Service', 'Description', 'content', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(31, 'social', 'Social Media Management', 'Description', 'social', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(32, 'speed', 'Speed Optimization', 'Description', 'speed', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(33, 'seo', 'Organic Search Engine Optimization', 'Description', 'seo', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(34, 'ads', 'Marketing & Advertisement', 'Description', 'ads', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(35, 'backup', 'Auto/Cloud Backup', 'Description', 'backup', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(36, 'security', 'Extra Security', 'Description', 'security', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(37, 'newsletter', 'Newsletter', 'Description', 'newsletter', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(38, 'chat', 'Live Support Chat Feature', 'Description', 'chat', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(39, 'maintenance', 'Periodic Maintenance & Updates', 'Description', 'maintenance', 0, 0, 360, 'checkbox', NULL, 0, 10),
+(40, 'custom', 'Custom Requests & Programs', 'Description', 'custom', 0, 0, 360, 'checkbox', NULL, 0, 10);
 
 -- --------------------------------------------------------
 
@@ -169,7 +182,8 @@ INSERT INTO `steps` (`step_ID`, `step_slug`, `step_name`, `step_order`, `main_ch
 (5, 'ecommerce_products', 'E-Commerce Products', 5, 1),
 (6, 'ecommerce_images', 'E-Commerce Product Images', 6, 1),
 (7, 'ecommerce_payment', 'E-Commerce Payment Methods', 7, 1),
-(8, 'additional', 'Additional Features and Services', 8, 20);
+(8, 'additional', 'Additional Features and Services', 8, 20),
+(9, 'results', 'Results Page', 9, 20);
 
 --
 -- Indexes for dumped tables
@@ -215,7 +229,7 @@ ALTER TABLE `fields`
 -- AUTO_INCREMENT for table `inputs`
 --
 ALTER TABLE `inputs`
-  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 --
 -- AUTO_INCREMENT for table `main_choices`
 --
@@ -225,7 +239,7 @@ ALTER TABLE `main_choices`
 -- AUTO_INCREMENT for table `steps`
 --
 ALTER TABLE `steps`
-  MODIFY `step_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `step_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- Constraints for dumped tables
 --

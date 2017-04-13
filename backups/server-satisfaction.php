@@ -13,7 +13,7 @@ if ( $this->stepStatus("satisfaction") == "current" ) {
 	<form role="form">
 <?php
 // BRING THE OLD DATA
-$this->bringdata();
+$this->bringData();
 ?>
 
 <?php

@@ -78,13 +78,13 @@ class WebEstimator {
 	}
 
 
-	// == SET HOME PAGE URL ==================================================
+	// == HOME PAGE URL ==================================================
 	function homePageURL() {
 		return "http://".$_SERVER["SERVER_NAME"].str_replace("/index.php", "", $_SERVER["PHP_SELF"]);
 	}
 
 
-	// == SET CURRENT PAGE URL ==================================================
+	// == CURRENT PAGE URL ==================================================
 	function currentPageURL($add = "") {
 
 		$pageURL = 'http';
@@ -138,13 +138,13 @@ class WebEstimator {
 	}
 
 
-	// == SHOW CONTENT ==================================================
+	// == SHOW PAGE CONTENT ==================================================
 	function showContent() {
 
 		if ( $this->isLoggedIn() ) {
 
 			// STEP BAR
-			include("view/show_steps.php");
+			include("view/progress_bar.php");
 
 			// SHOW Questions
 			include("view/step_content.php");
@@ -178,7 +178,7 @@ class WebEstimator {
 	}
 
 
-	// == CURRENT STEP ==================================================
+	// == CURRENT STEP SLUG ==================================================
 	function stepSlug($isStepSlug = "") {
 
 		if ($_SERVER["QUERY_STRING"] == "") { // If it's Home Page
@@ -260,7 +260,7 @@ class WebEstimator {
 	// == NEXT STEP ==================================================
 	function nextStepSlug($stepSlug = "") {
 
-		if ($step == "") $stepSlug = $this->stepSlug();
+		if ($stepSlug == "") $stepSlug = $this->stepSlug();
 
 		return $this->steps[ $this->stepNo($stepSlug) + 1 ]['step_slug'];
 
@@ -372,18 +372,18 @@ class WebEstimator {
 
 			// If the current step has no data yet, make this step skipped
 			if ( isset($_GET[$this->stepSlug()]) && $_GET[$this->stepSlug()] == "current" )
-				$url = $this->addQueryArg( $this->stepSlug(), "", $url );
+				$url = $this->queryArg( $this->stepSlug(), "", $url );
 
 			// If destination step is skipped, put "=current" to destination
 			if( $this->stepStatus($step) == "skipped" ) {
 
 				$url = $this->removeQueryArg( "go", $url );
-				$url = $this->addQueryArg( $step, "current", $url );
+				$url = $this->queryArg( $step, "current", $url );
 
 			// If destination step is input, put "&go=destination"
 			} elseif ( $this->stepStatus($step) == "done" ) {
 
-				$url = $this->addQueryArg( "go", $step, $url );
+				$url = $this->queryArg( "go", $step, $url );
 
 			}
 
@@ -395,7 +395,7 @@ class WebEstimator {
 
 
 	// == ADD/UPDATE QUERY ARGUMENT ==================================================
-	function addQueryArg($key, $value, $url) {
+	function queryArg($key, $value, $url) {
 
 		$parsed = parse_url($url);
 
@@ -468,18 +468,18 @@ class WebEstimator {
 
 
 		// Always add the data to current step
-		$url = $this->addQueryArg( $this->stepSlug(), $data, $url );
+		$url = $this->queryArg( $this->stepSlug(), $data, $url );
 
 
 		// If destination is not empty
 		if ( isset($_GET[$next_step]) && $_GET[$next_step] != "" ) {
 
-			$url = $this->addQueryArg( "go", $next_step, $url );
+			$url = $this->queryArg( "go", $next_step, $url );
 
 		} else {
 
 			$url = $this->removeQueryArg( "go", $url );
-			$url = $this->addQueryArg( $next_step, "current", $url );
+			$url = $this->queryArg( $next_step, "current", $url );
 
 		}
 
@@ -507,7 +507,7 @@ class WebEstimator {
 
 
 	// == BRING THE OLD DATA ==================================================
-	function bringdata() {
+	function bringData() {
 
 		foreach ($_GET as $data => $value) {
 	    	echo "<input type='text' name='$data' value='$value' hidden='true'>\n";

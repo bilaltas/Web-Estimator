@@ -14,7 +14,7 @@ if ( $this->stepStatus("additional") == "current" ) {
 	<form role="form">
 <?php
 // BRING THE OLD DATA
-$this->bringdata();
+$this->bringData();
 ?>
 
 <?php
@@ -382,7 +382,167 @@ foreach ($x as $y) {
 	</div> <!-- /.col-xs-12 -->
 </div> <!-- /row -->
 <?php
-
 }
-
 ?>
+
+
+<script>
+<?php
+if ( $this->stepSlug("additional") || $this->stepSlug("dynamic_pages") ) {
+?>
+
+	function checktheother(id, must, destination, destination2, destination3) {
+
+	 	if (document.getElementById(id) != null) {
+			if (document.getElementById(id).checked == true) {
+				if (document.getElementById(destination) != null) document.getElementById(destination).checked = true;
+				if (destination2!="" && document.getElementById(destination2)!=null ) document.getElementById(destination2).checked = true;
+				if (destination3!="" && document.getElementById(destination3)!=null ) document.getElementById(destination3).checked = true;
+			}
+		}
+
+		if (document.getElementById(destination) != null) {
+			document.getElementById(destination).onchange = function(){
+
+				if ( must=='must') {
+					if (document.getElementById(destination).checked == false && document.getElementById(destination2).checked == false) {
+						if (document.getElementById(id) != null) document.getElementById(id).checked = false;
+					}
+					if (document.getElementById(destination).checked == true) {
+						if (document.getElementById(id) != null) document.getElementById(id).checked = true;
+					}
+				} else {
+					if (document.getElementById(destination).checked == false) {
+						if (document.getElementById(id) != null) document.getElementById(id).checked = false;
+					}
+				}
+
+			};
+		}
+
+		if ( destination2!="" ) {
+
+			if (document.getElementById(destination2) != null) {
+				document.getElementById(destination2).onchange = function(){
+
+					if ( must=='must') {
+						if (document.getElementById(destination2).checked == false && document.getElementById(destination).checked == false) {
+							if (document.getElementById(id) != null) document.getElementById(id).checked = false;
+						}
+						if (document.getElementById(destination2).checked == true) {
+							if (document.getElementById(id) != null) document.getElementById(id).checked = true;
+						}
+					} else {
+						if (document.getElementById(destination2).checked == false) {
+							if (document.getElementById(id) != null) document.getElementById(id).checked = false;
+						}
+					}
+
+				};
+			}
+		}
+
+		if ( destination3!="" ) {
+
+			if (document.getElementById(destination3) != null) {
+				document.getElementById(destination3).onchange = function(){
+
+					if ( must=='must') {
+						if (document.getElementById(destination3).checked == false && document.getElementById(destination2).checked == false && document.getElementById(destination).checked == false) {
+							if (document.getElementById(id) != null) document.getElementById(id).checked = false;
+						}
+						if (document.getElementById(destination3).checked == true) {
+							if (document.getElementById(id) != null) document.getElementById(id).checked = true;
+						}
+					} else {
+						if (document.getElementById(destination3).checked == false) {
+							if (document.getElementById(id) != null) document.getElementById(id).checked = false;
+						}
+					}
+
+				};
+			}
+		}
+
+
+	}
+
+	window.onload = checktheother;
+
+	function unchecktheother(id, destination, dependent1, dependent2, dependent3) {
+
+
+		if ( dependent1 == null && dependent2 == null && dependent3 == null ) {
+		 	if (document.getElementById(id) != null) {
+				if (document.getElementById(id).checked == false) {
+					if (document.getElementById(destination) != null) document.getElementById(destination).checked = false;
+				} else {
+					if (document.getElementById(destination) != null) document.getElementById(destination).checked = true;
+				}
+			}
+		} else if ( dependent1 != null && dependent2 == null && dependent3 == null ) {
+		 	if (document.getElementById(id) != null) {
+				if (document.getElementById(id).checked == false) {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true ) document.getElementById(destination).checked = false;
+				} else {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true ) document.getElementById(destination).checked = true;
+				}
+			}
+		} else if ( dependent1 != null && dependent2 != null && dependent3 == null ) {
+		 	if (document.getElementById(id) != null) {
+				if (document.getElementById(id).checked == false) {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true && document.getElementById(dependent2).checked != true ) document.getElementById(destination).checked = false;
+				} else {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true && document.getElementById(dependent2).checked != true ) document.getElementById(destination).checked = true;
+				}
+			}
+		} else if ( dependent1 != null && dependent2 != null && dependent3 != null ) {
+		 	if (document.getElementById(id) != null) {
+				if (document.getElementById(id).checked == false) {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true && document.getElementById(dependent2).checked != true ) document.getElementById(destination).checked = false;
+				} else {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true && document.getElementById(dependent2).checked != true ) document.getElementById(destination).checked = true;
+				}
+			}
+		}
+
+	}
+
+
+	function justunchecktheother(id, destination, dependent1, dependent2, dependent3) {
+
+
+		if ( dependent1 == null && dependent2 == null && dependent3 == null ) {
+		 	if (document.getElementById(id) != null) {
+				if (document.getElementById(id).checked == false) {
+					if (document.getElementById(destination) != null) document.getElementById(destination).checked = false;
+				}
+			}
+		} else if ( dependent1 != null && dependent2 == null && dependent3 == null ) {
+		 	if (document.getElementById(id) != null) {
+				if (document.getElementById(id).checked == false) {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true ) document.getElementById(destination).checked = false;
+				}
+			}
+		} else if ( dependent1 != null && dependent2 != null && dependent3 == null ) {
+		 	if (document.getElementById(id) != null) {
+				if (document.getElementById(id).checked == false) {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true && document.getElementById(dependent2).checked != true ) document.getElementById(destination).checked = false;
+				}
+			}
+		} else if ( dependent1 != null && dependent2 != null && dependent3 != null ) {
+		 	if (document.getElementById(id) != null) {
+				if (document.getElementById(id).checked == false) {
+					if (document.getElementById(destination) != null && document.getElementById(dependent1).checked != true && document.getElementById(dependent2).checked != true ) document.getElementById(destination).checked = false;
+				}
+			}
+		}
+
+
+	}
+
+<?php
+}
+?>
+
+</script>

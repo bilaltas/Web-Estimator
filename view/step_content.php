@@ -1,3 +1,5 @@
+<!-- Step Content ================================================== -->
+
 <div class="row">
 	<div class="col-xs-12">
 
@@ -8,33 +10,27 @@ if ( $this->stepSlug("concept") ) {
 		<div class="btn-group" style="width: 100%;">
 
 
-<button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button" style="width: 100%;">
+			<button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button" style="width: 100%;">
+			<?= !isset($_GET['concept']) ? "Chose the type of website you want us to build:" : "Selected: ". $this->mainChoiceTitle($_GET['concept']) ?><span class="caret"></span>
+			</button>
+
+			<ul role="menu" class="dropdown-menu" style="width: 100%;">
 <?php
-
-if ( !isset($_GET['go']) || $_GET['concept']=="current" ) {	echo "Chose the type of website you want us to build:";}
-else {
-	echo "Selected: ". $this->mainChoiceTitle($_GET['concept']);
-}
-
-?>
-<span class="caret"></span></button>
-	<ul role="menu" class="dropdown-menu" style="width: 100%;">
-<?php
-
 
 	$main_choices_cat_query = $this->dbQuery("SELECT * FROM main_choices WHERE main_choice_parent_ID = 0");
 	while ($main_choice_cat = $main_choices_cat_query->fetch()) {
 
+		// Choice Category
 		echo '<li class="dropdown-header" role="presentation">'.$main_choice_cat['main_choice_name'].'</li>';
 
 		$main_choice_query = $this->dbQuery("SELECT * FROM main_choices WHERE main_choice_parent_ID = ".$main_choice_cat['main_choice_ID'] );
 		while ($main_choice = $main_choice_query->fetch()) {
 
-			$isDisabled = ( $main_choice['main_choice_active'] ? false : true);
+			$isDisabled = $main_choice['main_choice_active'] ? false : true;
 
 			echo '
 			<li'.($isDisabled ? " class='disabled'" : "").'>
-				<a href="'.($isDisabled ? "#" : $this->submitLink($main_choice['main_choice_slug'], 'domain')).'" '.($isDisabled ? 'title="Coming Soon" data-toggle="tooltip" data-placement="left"' : "").'>'.$main_choice['main_choice_name'].'</a>
+				<a href="'.( $isDisabled ? "#" : $this->submitLink($main_choice['main_choice_slug'], $this->nextStepSlug()) ).'" '.($isDisabled ? 'title="Coming Soon" data-toggle="tooltip" data-placement="left"' : "").'>'.$main_choice['main_choice_name'].'</a>
 			</li>';
 
 		}
@@ -50,13 +46,21 @@ else {
 
 
 <?php
+} elseif ( $this->stepSlug("results") ) {
+
+
+	foreach ($_GET as $question => $answer) {
+		echo $question." => ".$answer."<br/><br/>";
+	}
+
+
 } else {
 ?>
 
 	<form role="form">
 	<?php
 	// BRING THE PREVIOUS DATA
-	$this->bringdata();
+	$this->bringData();
 	?>
 
 <?php
@@ -107,6 +111,7 @@ else {
 				    	<?=$input['input_required'] ? 'required' : ''?>
 				    >
 				    <?=$input['input_name']?>
+					<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
 				</label>
 
 			<?php
@@ -131,6 +136,7 @@ else {
 				    	<?=$input['input_disabled'] ? 'disabled '.($input['input_required'] ? 'checked' : '') : ''?>
                 	>
 					<?=$input['input_name']?>
+					<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
 				</label>
 
 
@@ -161,6 +167,7 @@ else {
 				    	<?=$input['input_required'] ? 'required' : ''?>
                 	>
 					<?=$input['input_description']?>
+					<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
 				</label>
 
 
@@ -174,6 +181,7 @@ else {
 				<label class="checkbox checktoshow">
 					<input type="checkbox" data-toggle="checkbox" <?=$this->inputValues($inputNo) ? 'checked' : ''?>>
 					<?=$input['input_checkbox_name']?>
+					<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
 				</label>
 
 				<label style="<?=$this->inputValues($inputNo) ? '' : 'display: none;'?>">
@@ -198,6 +206,7 @@ else {
 
 			}
 			?>
+
 
 
 		<?php
@@ -251,3 +260,7 @@ else {
 
 	</div> <!-- /.col-xs-12 -->
 </div> <!-- /row -->
+
+<!-- Step Content End ================================================== -->
+
+

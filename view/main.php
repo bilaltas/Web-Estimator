@@ -23,13 +23,16 @@
 	  <div class="container">
 
 
-		<?php
-		include('view/header.php');
+<?php
+// HEADER
+include('view/header.php');
 
-		$this->showContent();
-		?>
+// Show step contents
+$this->showContent();
+?>
 
 
+		<!-- Put a little space -->
 		<div class="row">
 			<div class="col-xs-12">
 				<br/><br/><br/><br/><br/>
@@ -39,12 +42,12 @@
 
 	</div> <!-- /container -->
 
+
+
 <?php
-// FOOTER BAR
+// FOOTER
 include("view/footer.php");
 ?>
-
-<?php include("view/footer_js.php"); ?>
 
   </body>
 </html>

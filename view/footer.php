@@ -1,3 +1,5 @@
+<!-- Footer ================================================== -->
+
     <footer>
       <div class="container">
         <div class="row">
@@ -77,3 +79,15 @@ Then, I will help you on the last step.
         </div> <!-- /row -->
       </div> <!-- /container -->
     </footer>
+
+
+    <!-- jQuery (necessary for Flat UI's JavaScript plugins) -->
+    <script src="js/vendor/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/flat-ui.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/custom.js"></script>
+
+<!-- Footer End ================================================== -->
+
+
