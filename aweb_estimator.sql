@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 10, 2017 at 02:27 PM
+-- Generation Time: Apr 13, 2017 at 07:50 PM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -63,8 +63,11 @@ CREATE TABLE `inputs` (
   `input_description` varchar(300) NOT NULL,
   `input_value` varchar(60) NOT NULL,
   `input_required` tinyint(1) NOT NULL DEFAULT '1',
+  `input_disabled` tinyint(1) NOT NULL DEFAULT '0',
   `input_time` int(20) NOT NULL,
   `input_type` varchar(60) NOT NULL,
+  `input_checkbox_name` varchar(100) DEFAULT NULL,
+  `input_send_separate` tinyint(1) NOT NULL DEFAULT '0',
   `field_ID` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -72,19 +75,32 @@ CREATE TABLE `inputs` (
 -- Dumping data for table `inputs`
 --
 
-INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_description`, `input_value`, `input_required`, `input_time`, `input_type`, `field_ID`) VALUES
-(1, 'domain', 'Yes, I already have my website\'s domain', '', 'yes', 1, 0, 'radio', 1),
-(2, 'domain', 'No, we will buy a new domain', '', 'no', 1, 15, 'radio', 1),
-(5, 'hosting', 'Yes, It is a <b>Linux Hosting</b>', '', 'linux', 1, 0, 'radio', 2),
-(6, 'hosting', 'Yes, It is a <b>Windows Hosting</b>', '', 'windows', 1, 30, 'radio', 2),
-(7, 'hosting', 'Other or not sure', '', 'other', 1, 40, 'radio', 2),
-(8, 'hosting', 'No, we will buy a new hosting', '', 'no', 1, 30, 'radio', 2),
-(9, 'home', 'Home Page', '', 'home', 1, 360, 'checkbox', 3),
-(10, 'about', 'About Us Page', '', 'about', 0, 60, 'checkbox', 3),
-(11, 'privacy', 'Privacy Policy Page', '', 'privacy', 0, 40, 'checkbox', 3),
-(12, 'terms', 'Terms and Conditions Page', '', 'terms', 0, 40, 'checkbox', 3),
-(13, 'contact', 'Contact Us Page', '', 'contact', 0, 60, 'checkbox', 3),
-(14, 'more_static', 'and', 'more custom static page(s)', '0', 0, 60, 'number', 3);
+INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_description`, `input_value`, `input_required`, `input_disabled`, `input_time`, `input_type`, `input_checkbox_name`, `input_send_separate`, `field_ID`) VALUES
+(1, 'domain', 'Yes, I already have my website\'s domain', '', 'yes', 1, 0, 0, 'radio', NULL, 0, 1),
+(2, 'domain', 'No, we will buy a new domain', '', 'no', 1, 0, 15, 'radio', NULL, 0, 1),
+(5, 'hosting', 'Yes, It is a <b>Linux Hosting</b>', '', 'linux', 1, 0, 0, 'radio', NULL, 0, 2),
+(6, 'hosting', 'Yes, It is a <b>Windows Hosting</b>', '', 'windows', 1, 0, 30, 'radio', NULL, 0, 2),
+(7, 'hosting', 'Other or not sure', '', 'other', 1, 0, 40, 'radio', NULL, 0, 2),
+(8, 'hosting', 'No, we will buy a new hosting', '', 'no', 1, 0, 30, 'radio', NULL, 0, 2),
+(9, 'home', 'Home Page', '', 'home', 1, 1, 360, 'checkbox', NULL, 0, 3),
+(10, 'about', 'About Us Page', '', 'about', 0, 0, 60, 'checkbox', NULL, 0, 3),
+(11, 'privacy', 'Privacy Policy Page', '', 'privacy', 0, 0, 40, 'checkbox', NULL, 0, 3),
+(12, 'terms', 'Terms and Conditions Page', '', 'terms', 0, 0, 40, 'checkbox', NULL, 0, 3),
+(13, 'contact', 'Contact Us Page', '', 'contact', 0, 0, 60, 'checkbox', NULL, 0, 3),
+(14, 'more_static', 'and', 'more custom static page(s)', '0', 0, 0, 60, 'number', NULL, 1, 3),
+(15, 'blog_posts', 'How many blog posts do you want to add for first?', 'blog post(s)', '1', 0, 0, 10, 'number-checktoshow', 'Blog Page', 0, 4),
+(16, 'portfolio', 'How many portfolio items do you want to add for first?', 'portfolio item(s)', '1', 0, 0, 30, 'number-checktoshow', 'Portfolio Page', 0, 4),
+(17, 'ecommerce_product', '', 'products(s)', '1', 1, 0, 20, 'number', NULL, 0, 5),
+(18, 'ecommerce_images', 'Yes, I have. / They will be ready.', '', 'yes', 1, 0, 0, 'radio', NULL, 0, 6),
+(19, 'ecommerce_images', 'Yes, but not all the products. I need a photography service for rest of my products.', '', 'half', 1, 0, 0, 'radio', NULL, 0, 6),
+(20, 'ecommerce_images', 'No, I don\'t. I need a photography service for all my products.', '', 'no', 1, 0, 0, 'radio', NULL, 0, 6),
+(21, 'ecommerce_ssl', 'Yes, I would.', '', 'yes', 1, 0, 0, 'radio', NULL, 0, 7),
+(22, 'ecommerce_ssl', 'No, I don\'t need that.', '', 'no', 1, 0, 0, 'radio', NULL, 0, 7),
+(23, 'ecommerce_payment_paypal', 'Via PayPal (No requirements)', '', 'paypal', 0, 0, 30, 'checkbox', NULL, 0, 8),
+(24, 'ecommerce_payment_card', 'Credit Card Direct Payment (Needs some merchandise information)', '', 'card', 0, 0, 360, 'checkbox', NULL, 0, 8),
+(25, 'ecommerce_payment_other', 'Others (Wire, Pay on Delivery, etc. )', '', 'other', 0, 0, 360, 'checkbox', NULL, 0, 8),
+(26, 'ecommerce_ssl', 'Yes, I do.', '', 'yes', 1, 0, 15, 'radio', NULL, 1, 9),
+(27, 'ecommerce_ssl', 'No, I don\'t want it.', '', 'no', 1, 0, 0, 'radio', NULL, 1, 9);
 
 -- --------------------------------------------------------
 
@@ -194,22 +210,22 @@ ALTER TABLE `steps`
 -- AUTO_INCREMENT for table `fields`
 --
 ALTER TABLE `fields`
-  MODIFY `field_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `field_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `inputs`
 --
 ALTER TABLE `inputs`
-  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `main_choices`
 --
 ALTER TABLE `main_choices`
-  MODIFY `main_choice_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `main_choice_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT for table `steps`
 --
 ALTER TABLE `steps`
-  MODIFY `step_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `step_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- Constraints for dumped tables
 --

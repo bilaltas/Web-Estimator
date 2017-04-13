@@ -179,39 +179,39 @@ class WebEstimator {
 
 
 	// == CURRENT STEP ==================================================
-	function stepSlug($stepSlug = "") {
+	function stepSlug($isStepSlug = "") {
 
 		if ($_SERVER["QUERY_STRING"] == "") { // If it's Home Page
 
-			if ($stepSlug!="" && $stepSlug=="concept") {
-				return true;
-			}elseif ($stepSlug!="" && $stepSlug!="concept") {
-				return false;
+
+			if ($isStepSlug != "" ) {
+				return ($isStepSlug == "concept" ? true : false);
 			} else {
 				return "concept";
 			}
 
+
 		} elseif ( isset($_GET['go']) ) { // ...&go=xxx
 
-			if ($stepSlug!="" && $stepSlug==$_GET['go']) {
-				return true;
-			}elseif ($stepSlug!="" && $stepSlug!=$_GET['go']) {
-				return false;
+
+			if ($isStepSlug != "" ) {
+				return ($isStepSlug == $_GET['go'] ? true : false);
 			} else {
 				return $_GET['go'];
 			}
 
+
 		} else { // ...&xxx=current...
+
 
 			$new_gets = array_flip($_GET);
 
-			if ($stepSlug!="" && $stepSlug==$new_gets['current']) {
-				return true;
-			}elseif ($stepSlug!="" && $stepSlug!=$new_gets['current']) {
-				return false;
+			if ($isStepSlug != "" ) {
+				return ($isStepSlug == $new_gets['current'] ? true : false);
 			} else {
 				return $new_gets['current'];
 			}
+
 
 		}
 
@@ -337,11 +337,11 @@ class WebEstimator {
 		{
 			return "notyet";
 		}
-		elseif ( isset($_GET[$step]) && $_GET[$step]=="" )
+		elseif ( isset($_GET[$step]) && $_GET[$step] == "" )
 		{
 			return "skipped";
 		}
-		elseif ( isset($_GET[$step]) && $_GET[$step]!="" )
+		elseif ( isset($_GET[$step]) && $_GET[$step] != "" )
 		{
 			return "done";
 		}
@@ -360,29 +360,28 @@ class WebEstimator {
 
 		$url = $this->currentPageURL();
 
-		if ( $this->stepSlug() == $step ) { // Avoid if the destination is our current step
+		if ( $this->stepSlug($step) ) { // Avoid if the destination step is our current step
 
 			$url = "#";
 
-		} elseif ( $this->stepStatus($step) == "notyet" ) { // Avoid if the destination is not seen yet
+		} elseif ( $this->stepStatus($step) == "notyet" ) { // Avoid if the destination step is not seen yet
 
 			$url = "#";
 
 		} else {
 
-			if( isset($_GET[$step]) && $_GET[$step] == "" ) { // ...&destination...    ->    Put "=current" to destination
+			// If the current step has no data yet, make this step skipped
+			if ( isset($_GET[$this->stepSlug()]) && $_GET[$this->stepSlug()] == "current" )
+				$url = $this->addQueryArg( $this->stepSlug(), "", $url );
+
+			// If destination step is skipped, put "=current" to destination
+			if( $this->stepStatus($step) == "skipped" ) {
 
 				$url = $this->removeQueryArg( "go", $url );
 				$url = $this->addQueryArg( $step, "current", $url );
 
-			} elseif ( isset($_GET[$step]) && $_GET[$step] != "" ) { // ...&mystep=current&destination=xxx    ->    Put "&go=destination"
-
-				$url = $this->removeQueryArg( $this->stepSlug(), $url );
-
-				if ( isset($_GET[$this->stepSlug()]) && $_GET[$this->stepSlug()] != "current" )
-					$url = $this->addQueryArg( $this->stepSlug(), $_GET[$this->stepSlug()], $url );
-				else
-					$url = $this->addQueryArg( $this->stepSlug(), "", $url );
+			// If destination step is input, put "&go=destination"
+			} elseif ( $this->stepStatus($step) == "done" ) {
 
 				$url = $this->addQueryArg( "go", $step, $url );
 
@@ -490,11 +489,19 @@ class WebEstimator {
 
 
 	// == GET INPUT VALUE  ==================================================
-	function inputValues($step = "") {
+	function inputValues($inputNo = null, $stepSlug = "") {
 
-		$values = explode(',', $_GET[($step != '' ? $step : $this->stepSlug())]);
+		$values = explode('-', $_GET[( $stepSlug != '' ? $stepSlug : $this->stepSlug() )]);
 
-		return $values;
+
+		if ( $inputNo !== null ) {
+
+			if ( isset($values[$inputNo]) && $values[$inputNo] != "current" && $values[$inputNo] != "na" ) return $values[$inputNo];
+			else return false;
+
+		} else {
+			return $values;
+		}
 
 	}
 
