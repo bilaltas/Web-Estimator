@@ -121,7 +121,10 @@ if ( $this->stepSlug("concept") ) {
 			} elseif ($input['input_type'] == "checkbox") {
 
 				// For disabled ones
-				if ($input['input_disabled']) $inputNo--;
+				if ($input['input_disabled']) {
+					if ($input['input_required']) echo '<input type="hidden" name="'.($input['input_send_separate'] ? '' : 't_').$input['input_slug'].'" value="'.$input['input_value'].'">';
+					$inputNo--;
+				}
 
 			?>
 

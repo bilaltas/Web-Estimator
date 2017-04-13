@@ -11,7 +11,6 @@ class WebEstimator {
 
 	// == INIT ==================================================
 	function __construct() {
-		global $mainChoices, $steps;
 
 		session_start();
 
