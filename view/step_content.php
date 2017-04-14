@@ -49,6 +49,26 @@ if ( $this->stepSlug("concept") ) {
 } elseif ( $this->stepSlug("results") ) {
 
 
+	foreach ($this->steps as $stepNo => $step) {
+
+		echo '<h3>'.$step['step_name'].'</h3>';
+
+		foreach ($this->inputValues(null, $step['step_slug']) as $question => $answer) {
+
+			if ($question != $step['step_slug']) echo "<h4 style='margin-bottom: -20px; margin-left: 20px;'>".$question."</h4><br/>";
+
+			echo "<ul>";
+			if (is_array($answer)) {
+				foreach ($answer as $ans) echo "<li>".$ans." -> ".$this->inputTime($ans)."<li/>";
+			} else {
+				echo "<li>".$answer." -> ".$this->inputTime($question)."<li/>";
+			}
+			echo "</ul>";
+		}
+
+	}
+
+
 	foreach ($_GET as $question => $answer) {
 		echo $question." => ".$answer."<br/><br/>";
 	}
@@ -106,7 +126,7 @@ if ( $this->stepSlug("concept") ) {
 				    <input
                 		type="<?=$input['input_type']?>"
 				    	data-toggle="radio"
-				    	name="<?=$input['input_send_separate'] ? '' : 't_'?><?=$input['input_slug']?>"
+				    	name="t_<?=$input['input_slug']?>"
 				    	value="<?=$input['input_value']?>"
 				    	id="<?=$input['input_slug']?>"
 				    	<?=$checked?>
@@ -122,17 +142,20 @@ if ( $this->stepSlug("concept") ) {
 
 			} elseif ($input['input_type'] == "checkbox") { // CHECKBOX =========
 
+				// Collect the temp data
+				$temp_data[] = "t_".$input['input_value'];
+
 				// Send the disabled ones
 				if ($input['input_disabled']) {
-					if ($input['input_required']) echo '<input type="hidden" name="'.($input['input_send_separate'] ? '' : 't_').$input['input_slug'].'" value="'.$input['input_value'].'">';
+					if ($input['input_required']) echo '<input type="hidden" name="t_'.$input['input_value'].'" value="'.$input['input_slug'].'">';
 					$inputNo--;
 				}
 
 
-				if ( $input['input_value'] == $this->stepSlug() )
-					$checked =  $this->inputValues($input['input_value']) && in_array($input['input_slug'], $this->inputValues($input['input_value'])) ? 'checked' : '';
+				if ( $input['input_slug'] == $this->stepSlug() )
+					$checked =  $this->inputValues($input['input_slug']) && in_array($input['input_value'], $this->inputValues($input['input_slug'])) ? 'checked' : '';
 				else {
-					$checked = $this->inputValues($input['input_slug']) == $input['input_value'] ? 'checked' : '';
+					$checked = $this->inputValues($input['input_value']) == $input['input_slug'] ? 'checked' : '';
 				}
 
 			?>
@@ -141,8 +164,8 @@ if ( $this->stepSlug("concept") ) {
                 	<input
                 		type="<?=$input['input_type']?>"
                 		data-toggle="checkbox"
-				    	name="<?=$input['input_send_separate'] ? '' : 't_'?><?=$input['input_slug']?>"
-				    	value="<?=$input['input_value']?>"
+				    	name="t_<?=$input['input_value']?>"
+				    	value="<?=$input['input_slug']?>"
 				    	id="<?=$input['input_slug']?>"
 				    	<?=$checked?>
 				    	<?=$input['input_disabled'] ? 'disabled '.($input['input_required'] ? 'checked' : '') : ''?>
@@ -167,7 +190,7 @@ if ( $this->stepSlug("concept") ) {
                 		class="form-control input-hg"
                 		style="width: 100px;"
                 		type="<?=$input['input_type']?>"
-				    	name="<?=$input['input_send_separate'] ? '' : 't_'?><?=$input['input_slug']?>"
+				    	name="t_<?=$input['input_slug']?>"
 				    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug'])[0] : $input['input_value']?>"
 				    	min="0"
 				    	id="<?=$input['input_slug']?>"
@@ -246,10 +269,14 @@ if ( $this->stepSlug("concept") ) {
 
 			if ( in_array($key, $temp_data) && $value != "" ) {
 
-				if ($correctKey != $this->stepSlug()) $data_to_send .= $correctKey;
-				if ($correctKey != $this->stepSlug() && $value !=  $this->stepSlug()) $data_to_send .= "-";
-				if ($value !=  $this->stepSlug()) $data_to_send .= $value;
+				if ($correctKey != $this->stepSlug())
+					$data_to_send .= $correctKey;
 
+				if ($correctKey != $this->stepSlug() && $value != $this->stepSlug())
+					$data_to_send .= "-";
+
+				if ($value != $this->stepSlug())
+					$data_to_send .= $value;
 				$data_to_send .= "--";
 
 			}

@@ -319,6 +319,17 @@ class WebEstimator {
 	}
 
 
+	// == INPUT TIME ==================================================
+	function inputTime( $inputSlug ) {
+
+		$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_value = '".$inputSlug."' LIMIT 1");
+		$row = $stmt->fetch();
+
+		return $row['input_time'];
+
+	}
+
+
 	// == STEP STATUS ==================================================
 	function stepStatus($step) {
 
