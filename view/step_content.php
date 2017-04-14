@@ -92,12 +92,14 @@ if ( $this->stepSlug("concept") ) {
 
 
 			// INPUT TYPES
-			if ($input['input_type'] == "radio") {
+			if ($input['input_type'] == "radio") { // RADIO =========
 
-				if ( $input['input_send_separate'] )
-					$checked = isset($_GET[ $input['input_slug'] ]) && $_GET[ $input['input_slug'] ] == $input['input_value'] ? 'checked' : '';
-				else
-					$checked = $this->inputValues($inputNo) && $this->inputValues($inputNo) == $input['input_value'] ? 'checked' : '';
+
+				if ( $input['input_slug'] == $this->stepSlug() )
+					$checked =  $this->inputValues($input['input_slug'])[0] == $input['input_value'] ? 'checked' : '';
+				else {
+					$checked = $this->inputValues($input['input_slug']) == $input['input_value'] ? 'checked' : '';
+				}
 
 		?>
 				<label class="radio primary">
@@ -118,12 +120,19 @@ if ( $this->stepSlug("concept") ) {
 				// Don't increase because it's only one choice
 				//$inputNo++;
 
-			} elseif ($input['input_type'] == "checkbox") {
+			} elseif ($input['input_type'] == "checkbox") { // CHECKBOX =========
 
-				// For disabled ones
+				// Send the disabled ones
 				if ($input['input_disabled']) {
 					if ($input['input_required']) echo '<input type="hidden" name="'.($input['input_send_separate'] ? '' : 't_').$input['input_slug'].'" value="'.$input['input_value'].'">';
 					$inputNo--;
+				}
+
+
+				if ( $input['input_value'] == $this->stepSlug() )
+					$checked =  $this->inputValues($input['input_value']) && in_array($input['input_slug'], $this->inputValues($input['input_value'])) ? 'checked' : '';
+				else {
+					$checked = $this->inputValues($input['input_slug']) == $input['input_value'] ? 'checked' : '';
 				}
 
 			?>
@@ -135,7 +144,7 @@ if ( $this->stepSlug("concept") ) {
 				    	name="<?=$input['input_send_separate'] ? '' : 't_'?><?=$input['input_slug']?>"
 				    	value="<?=$input['input_value']?>"
 				    	id="<?=$input['input_slug']?>"
-				    	<?=in_array($input['input_value'], $this->inputValues()) ? 'checked' : ''?>
+				    	<?=$checked?>
 				    	<?=$input['input_disabled'] ? 'disabled '.($input['input_required'] ? 'checked' : '') : ''?>
                 	>
 					<?=$input['input_name']?>
@@ -147,12 +156,8 @@ if ( $this->stepSlug("concept") ) {
 
 				$inputNo++;
 
-			} elseif ($input['input_type'] == "number") {
+			} elseif ($input['input_type'] == "number") { // NUMBER =========
 
-				if ( $input['input_send_separate'] )
-					$value = isset($_GET[ $input['input_slug'] ]) ? $_GET[ $input['input_slug'] ] : $input['input_value'];
-				else
-					$value = $this->inputValues($inputNo) ? $this->inputValues($inputNo) : $input['input_value'];
 			?>
 
 
@@ -163,14 +168,13 @@ if ( $this->stepSlug("concept") ) {
                 		style="width: 100px;"
                 		type="<?=$input['input_type']?>"
 				    	name="<?=$input['input_send_separate'] ? '' : 't_'?><?=$input['input_slug']?>"
-				    	value="<?=$value?>"
+				    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug'])[0] : $input['input_value']?>"
 				    	min="0"
 				    	id="<?=$input['input_slug']?>"
 				    	<?=$input['input_disabled'] ? 'disabled' : ''?>
 				    	<?=$input['input_required'] ? 'required' : ''?>
                 	>
 					<?=$input['input_description']?>
-					<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
 				</label>
 
 
@@ -178,26 +182,25 @@ if ( $this->stepSlug("concept") ) {
 
 				$inputNo++;
 
-			} elseif ($input['input_type'] == "number-checktoshow") {
+			} elseif ($input['input_type'] == "number-checktoshow") { // CHECK TO SHOW NUMBER =========
 			?>
 
 				<label class="checkbox checktoshow">
-					<input type="checkbox" data-toggle="checkbox" <?=$this->inputValues($inputNo) ? 'checked' : ''?>>
+					<input type="checkbox" data-toggle="checkbox" <?=$this->inputValues($input['input_slug']) ? 'checked' : ''?>>
 					<?=$input['input_checkbox_name']?>
-					<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
 				</label>
 
-				<label style="<?=$this->inputValues($inputNo) ? '' : 'display: none;'?>">
+				<label style="<?=$this->inputValues($input['input_slug']) ? '' : 'display: none;'?>">
 					<?=$input['input_name']?>
                 	<input
                 		class="form-control input-hg"
                 		style="width: 100px;"
                 		type="number"
 				    	name="t_<?=$input['input_slug']?>"
-				    	value="<?=$this->inputValues($inputNo) ? $this->inputValues($inputNo) : $input['input_value']?>"
+				    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug']) : $input['input_value']?>"
 				    	min="0"
-				    	id="<?=$inputNo?>"
-				    	<?=$this->inputValues($inputNo) ? '' : 'disabled'?>
+				    	id="<?=$input['input_slug']?>"
+				    	<?=$this->inputValues($input['input_slug']) ? '' : 'disabled'?>
                 	>
 					<?=$input['input_description']?>
 				</label>
@@ -239,9 +242,19 @@ if ( $this->stepSlug("concept") ) {
 		$data_to_send = "";
 		foreach ($_GET as $key => $value) {
 
-			if ( in_array($key, $temp_data) && $value != "" ) $data_to_send .= $value."-";
+			$correctKey = substr($key, 2);
 
-			if (end($_GET) == $value) $data_to_send = substr($data_to_send, 0, -1);
+			if ( in_array($key, $temp_data) && $value != "" ) {
+
+				if ($correctKey != $this->stepSlug()) $data_to_send .= $correctKey;
+				if ($correctKey != $this->stepSlug() && $value !=  $this->stepSlug()) $data_to_send .= "-";
+				if ($value !=  $this->stepSlug()) $data_to_send .= $value;
+
+				$data_to_send .= "--";
+
+			}
+
+			if (end($_GET) == $value) $data_to_send = substr($data_to_send, 0, -2);
 
 		}
 

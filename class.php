@@ -39,10 +39,7 @@ class WebEstimator {
 	// == DATA CONNECTION ==================================================
 	function dbConnect() {
 
-		$servername = "localhost";
-		$username = "root";
-		$password = "root";
-		$database = "aweb_estimator";
+		require "config.php";
 
 		$conn_error = "";
 		try {
@@ -488,18 +485,42 @@ class WebEstimator {
 
 
 	// == GET INPUT VALUE  ==================================================
-	function inputValues($inputNo = null, $stepSlug = "") {
+	function inputValues($key = null, $stepSlug = "") {
 
-		$values = explode('-', $_GET[( $stepSlug != '' ? $stepSlug : $this->stepSlug() )]);
+		$stepSlug = $stepSlug != '' ? $stepSlug : $this->stepSlug();
+
+		$fields = explode('--', $_GET[$stepSlug]);
+
+		$new_values = array();
+		foreach ($fields as $field) {
+
+			if ($field != "current" && $field != "na") {
+
+				if ( strpos($field, "-") ) { // Is not only-value
+
+					$key_val = explode('-', $field);
+					$new_values[$key_val[0]] = $key_val[1];
+
+				} else {
+
+					$new_values[$stepSlug][] = $field;
+
+				}
+
+			}
+
+		}
 
 
-		if ( $inputNo !== null ) {
+		if ( $key !== null ) {
 
-			if ( isset($values[$inputNo]) && $values[$inputNo] != "current" && $values[$inputNo] != "na" ) return $values[$inputNo];
+			if ( isset($new_values[$key]) ) return $new_values[$key];
 			else return false;
 
 		} else {
-			return $values;
+
+			return $new_values;
+
 		}
 
 	}
