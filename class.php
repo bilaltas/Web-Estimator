@@ -322,10 +322,19 @@ class WebEstimator {
 	// == INPUT TIME ==================================================
 	function inputTime( $inputSlug ) {
 
-		$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_value = '".$inputSlug."' LIMIT 1");
+		$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
 		$row = $stmt->fetch();
 
-		return $row['input_time'];
+		if ( is_numeric($row['input_time']) )
+			return $row['input_time'];
+		else {
+
+			$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_value = '".$inputSlug."' LIMIT 1");
+			$row = $stmt->fetch();
+
+			return $row['input_time'];
+
+		}
 
 	}
 
