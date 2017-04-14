@@ -265,7 +265,7 @@ class WebEstimator {
 
 
 	// == MAIN CHOICE TITLE ==================================================
-	function mainChoiceTitle( $main_choice = "" ) {
+	function mainChoiceTitle($main_choice = "") {
 
 		$stmt = $this->dbQuery("SELECT * FROM main_choices WHERE main_choice_slug = '".($main_choice != '' ? $main_choice : $this->mainChoice())."' LIMIT 1");
 		$row = $stmt->fetch();
@@ -320,7 +320,7 @@ class WebEstimator {
 
 
 	// == INPUT TIME ==================================================
-	function inputTime( $inputSlug ) {
+	function inputTime($inputSlug, $inputValue = "") { // CHECK THIS !!!
 
 		$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
 		$row = $stmt->fetch();
@@ -335,6 +335,17 @@ class WebEstimator {
 			return $row['input_time'];
 
 		}
+
+	}
+
+
+	// == INPUT NAME ==================================================
+	function inputName($inputSlug) {
+
+		$stmt = $this->dbQuery("SELECT input_name FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
+		$row = $stmt->fetch();
+
+		return $row['input_name'];
 
 	}
 

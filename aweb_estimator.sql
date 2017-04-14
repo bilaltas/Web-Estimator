@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 14, 2017 at 04:49 AM
+-- Generation Time: Apr 14, 2017 at 02:13 PM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -100,19 +100,19 @@ INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_description
 (25, 'ecommerce_payment', 'Others (Wire, Pay on Delivery, etc. )', '', 'other', 0, 0, 360, 'checkbox', NULL, 8),
 (26, 'ecommerce_ssl', 'Yes, I do.', '', 'yes', 1, 0, 15, 'radio', NULL, 9),
 (27, 'ecommerce_ssl', 'No, I don\'t want it.', '', 'no', 1, 0, 0, 'radio', NULL, 9),
-(28, 'logo', 'Logo Design', 'Description', 'additional', 0, 0, 500, 'checkbox', NULL, 10),
-(29, 'underconstruction', 'Custom Under Construction Page', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(30, 'content', 'Content Writing Service', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(31, 'social', 'Social Media Management', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(32, 'speed', 'Speed Optimization', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(33, 'seo', 'Organic Search Engine Optimization', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(34, 'ads', 'Marketing & Advertisement', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(35, 'backup', 'Auto/Cloud Backup', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(36, 'security', 'Extra Security', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(37, 'newsletter', 'Newsletter', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(38, 'chat', 'Live Support Chat Feature', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(39, 'maintenance', 'Periodic Maintenance & Updates', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10),
-(40, 'custom', 'Custom Requests & Programs', 'Description', 'additional', 0, 0, 360, 'checkbox', NULL, 10);
+(28, 'additional', 'Logo Design', 'Description', 'logo', 0, 0, 500, 'checkbox', NULL, 10),
+(29, 'additional', 'Custom Under Construction Page', 'Description', 'underconstruction', 0, 0, 360, 'checkbox', NULL, 10),
+(30, 'additional', 'Content Writing Service', 'Description', 'content', 0, 0, 360, 'checkbox', NULL, 10),
+(31, 'additional', 'Social Media Management', 'Description', 'social', 0, 0, 360, 'checkbox', NULL, 10),
+(32, 'additional', 'Speed Optimization', 'Description', 'speed', 0, 0, 360, 'checkbox', NULL, 10),
+(33, 'additional', 'Organic Search Engine Optimization', 'Description', 'seo', 0, 0, 360, 'checkbox', NULL, 10),
+(34, 'additional', 'Marketing & Advertisement', 'Description', 'ads', 0, 0, 360, 'checkbox', NULL, 10),
+(35, 'additional', 'Auto/Cloud Backup', 'Description', 'backup', 0, 0, 360, 'checkbox', NULL, 10),
+(36, 'additional', 'Extra Security', 'Description', 'security', 0, 0, 360, 'checkbox', NULL, 10),
+(37, 'additional', 'Newsletter', 'Description', 'newsletter', 0, 0, 360, 'checkbox', NULL, 10),
+(38, 'additional', 'Live Support Chat Feature', 'Description', 'chat', 0, 0, 360, 'checkbox', NULL, 10),
+(39, 'additional', 'Periodic Maintenance & Updates', 'Description', 'maintenance', 0, 0, 360, 'checkbox', NULL, 10),
+(40, 'additional', 'Custom Requests & Programs', 'Description', 'custom', 0, 0, 360, 'checkbox', NULL, 10);
 
 -- --------------------------------------------------------
 

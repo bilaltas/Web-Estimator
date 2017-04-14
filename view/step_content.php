@@ -55,11 +55,11 @@ if ( $this->stepSlug("concept") ) {
 
 		foreach ($this->inputValues(null, $step['step_slug']) as $question => $answer) {
 
-			if ($question != $step['step_slug']) echo "<h4 style='margin-bottom: -20px; margin-left: 20px;'>".$question."</h4><br/>";
+			if ($question != $step['step_slug']) echo "<h4 style='margin-bottom: -20px; margin-left: 20px;'>".$this->inputName($question)."</h4><br/>";
 
 			echo "<ul>";
 			if (is_array($answer)) {
-				foreach ($answer as $ans) echo "<li>".$ans." -> ".$this->inputTime($ans)."<li/>";
+				foreach ($answer as $ans) echo "<li>".$ans." -> ".$this->inputTime($ans)."<li/>"; // Separate times by type!!!
 			} else {
 				echo "<li>".$answer." -> ".$this->inputTime($question)."<li/>";
 			}
@@ -69,9 +69,11 @@ if ( $this->stepSlug("concept") ) {
 	}
 
 
+/*
 	foreach ($_GET as $question => $answer) {
 		echo $question." => ".$answer."<br/><br/>";
 	}
+*/
 
 
 } else {
