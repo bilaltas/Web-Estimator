@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 16, 2017 at 12:59 AM
+-- Generation Time: Apr 16, 2017 at 01:10 AM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -77,12 +77,12 @@ CREATE TABLE `inputs` (
 --
 
 INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_short_name`, `input_description`, `input_value`, `input_required`, `input_disabled`, `input_time`, `input_type`, `input_checkbox_name`, `field_ID`) VALUES
-(1, 'domain', 'Yes, I already have my website\'s domain', 'Yes', '', 'yes', 1, 0, 0, 'radio', NULL, 1),
-(2, 'domain', 'No, we will buy a new domain', 'No', '', 'no', 1, 0, 15, 'radio', NULL, 1),
+(1, 'domain', 'Yes, I already have my website\'s domain', 'I have', '', 'yes', 1, 0, 0, 'radio', NULL, 1),
+(2, 'domain', 'No, we will buy a new domain', 'I don\'t have', '', 'no', 1, 0, 15, 'radio', NULL, 1),
 (5, 'server', 'Yes, It is a <b>Linux Hosting</b>', 'Linux', '', 'linux', 1, 0, 0, 'radio', NULL, 2),
 (6, 'server', 'Yes, It is a <b>Windows Hosting</b>', 'Windows', '', 'windows', 1, 0, 30, 'radio', NULL, 2),
 (7, 'server', 'Other or not sure', 'Other or not sure', '', 'other', 1, 0, 40, 'radio', NULL, 2),
-(8, 'server', 'No, we will buy a new hosting', 'No', '', 'no', 1, 0, 30, 'radio', NULL, 2),
+(8, 'server', 'No, we will buy a new hosting', 'I don\'t have', '', 'no', 1, 0, 30, 'radio', NULL, 2),
 (9, 'static_pages', 'Home Page', 'Home Page', '', 'home', 1, 1, 360, 'checkbox', NULL, 3),
 (10, 'static_pages', 'About Us Page', 'About Page', '', 'about', 0, 0, 60, 'checkbox', NULL, 3),
 (11, 'static_pages', 'Privacy Policy Page', 'Privacy Page', '', 'privacy', 0, 0, 40, 'checkbox', NULL, 3),
@@ -94,7 +94,7 @@ INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_short_name`
 (17, 'ecommerce_products', '', 'Initial Products', 'products(s)', '1', 1, 0, 20, 'number', NULL, 5),
 (18, 'ecommerce_images', 'Yes, I have. / They will be ready.', 'All ready', '', 'yes', 1, 0, 0, 'radio', NULL, 6),
 (19, 'ecommerce_images', 'Yes, but not all the products. I need a photography service for rest of my products.', 'Not all', '', 'half', 1, 0, 30, 'radio', NULL, 6),
-(20, 'ecommerce_images', 'No, I don\'t. I need a photography service for all my products.', 'No', '', 'no', 1, 0, 30, 'radio', NULL, 6),
+(20, 'ecommerce_images', 'No, I don\'t. I need a photography service for all my products.', 'I don\'t have', '', 'no', 1, 0, 30, 'radio', NULL, 6),
 (21, 'watermark', 'Yes, I would.', 'Yes', '', 'yes', 1, 0, 30, 'radio', NULL, 7),
 (22, 'watermark', 'No, I don\'t need that.', 'No', '', 'no', 1, 0, 0, 'radio', NULL, 7),
 (23, 'ecommerce_payment', 'Via PayPal (No requirements)', 'Paypal', '', 'paypal', 0, 0, 30, 'checkbox', NULL, 8),
