@@ -104,7 +104,7 @@ if ( $this->stepSlug("concept") ) {
 				// 4. List the results entered
 				if ( is_array($inputValues['result']) ) {
 
-					// Input Title
+					// Field Title
 					echo $this->fieldShortName($fieldSlug).": ";
 
 					echo "<b>";
@@ -112,16 +112,17 @@ if ( $this->stepSlug("concept") ) {
 
 						echo $this->inputShortName($inputSlug, $inputValue);
 
+						// Individual Hours
 						if ($showTimes) echo " (".$this->beautifyMinutes( $this->inputTime($inputSlug, $inputValue) ).")";
-
-						// Count minutes
-						$totalMinutes += $this->inputTime($inputSlug, $inputValue);
 
 						// Separators
 						if ($inputValue != end($inputValues['result']))
 							echo ", ";
 						else
 							echo "<br/>";
+
+						// Count minutes
+						$totalMinutes += $this->inputTime($inputSlug, $inputValue);
 
 					}
 					echo "</b>";
@@ -132,6 +133,22 @@ if ( $this->stepSlug("concept") ) {
 					echo $this->inputShortName($inputSlug).": ";
 					echo "<b>".$this->inputShortName($inputSlug, $inputValues['result']);
 
+					// Individual Hours
+					if ($showTimes) echo " (".$this->beautifyMinutes( $this->inputTime($inputSlug, $inputValues['result']) ).")";
+
+					// Separator
+					echo "</b><br/>";
+
+					// Count minutes
+					$totalMinutes += $this->inputTime($inputSlug, $inputValues['result']);
+
+				} elseif ( $inputValues['result'] != "" ) {
+
+					// Field Title
+					echo $this->fieldShortName($fieldSlug).": ";
+					echo "<b>".$this->inputShortName($inputSlug, $inputValues['result']);
+
+					// Individual Hours
 					if ($showTimes) echo " (".$this->beautifyMinutes( $this->inputTime($inputSlug, $inputValues['result']) ).")";
 
 					// Separator
@@ -142,17 +159,14 @@ if ( $this->stepSlug("concept") ) {
 
 				} else {
 
-					// Input Title
-					echo $this->fieldShortName($fieldSlug).": ";
-					echo "<b>".$this->inputShortName($inputSlug, $inputValues['result']);
-
-					if ($showTimes) echo " (".$this->beautifyMinutes( $this->inputTime($inputSlug, $inputValues['result']) ).")";
+					// Title
+					if ($this->inputShortName($inputSlug))
+						echo $this->inputShortName($inputSlug).": "; // Input Title
+					else
+						echo $this->fieldShortName($fieldSlug).": "; // Field Title
 
 					// Separator
-					echo "</b><br/>";
-
-					// Count minutes
-					$totalMinutes += $this->inputTime($inputSlug, $inputValues['result']);
+					echo "<b>-</b><br/>";
 
 				}
 
@@ -168,13 +182,35 @@ if ( $this->stepSlug("concept") ) {
 	echo "<h1>TOTAL: ".$this->beautifyMinutes( $totalMinutes )."</h1>";
 
 
-/*
+	// TO-DO
+	// $ calculation with hourly rate
+	// Ask a rate to calculate?
+
+	// Share this project?
+
+	// Users table on DB
+	// Admin management on Choices, Steps, Fields, Inputs, ...
+
+
+
+	/*
+		Description:
+
+		1. Install the script to your server
+		2. Customize services and steps
+		3. Enter your hourly rate
+
+		and ready to serve!
+
+	*/
+
+
 	// ALL ANSWERS FOR DEBUGGING
+	//echo "<pre>".print_r($results, true)."</pre>";
+/*
 	foreach ($_GET as $question => $answer) {
 		echo $question." => ".$answer."<br/><br/>";
 	}
-
-	echo "<pre>".print_r($results, true)."</pre>";
 */
 
 

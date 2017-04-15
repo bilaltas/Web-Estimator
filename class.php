@@ -476,12 +476,14 @@ class WebEstimator {
 
 		if (is_numeric($inputValue)) return $inputValue;
 
-		$stmt = $this->dbQuery("SELECT input_name, input_short_name FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
+		$stmt = $this->dbQuery("SELECT input_name, input_short_name, input_value FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
 
 		if ($inputValue != "" && !is_numeric($inputValue))
-			$stmt = $this->dbQuery("SELECT input_name, input_short_name FROM inputs WHERE input_slug = '".$inputSlug."' AND input_value = '".$inputValue."' LIMIT 1");
+			$stmt = $this->dbQuery("SELECT input_name, input_short_name, input_value FROM inputs WHERE input_slug = '".$inputSlug."' AND input_value = '".$inputValue."' LIMIT 1");
 
 		$row = $stmt->fetch();
+
+		if ( $inputValue == "" && !is_numeric($row['input_value']) ) return false;
 
 		if ($row['input_short_name'] != "")
 			return $row['input_short_name'];
