@@ -46,34 +46,137 @@ if ( $this->stepSlug("concept") ) {
 
 
 <?php
-} elseif ( $this->stepSlug("results") ) {
+} elseif ( $this->stepSlug("results") ) { // RESULTS PAGE ============================================
+
+	// IF ADMIN? CHECK HERE !!!
+	$showTimes = false;
 
 
+	// STEPS QUERY
+	$results = array();
 	foreach ($this->steps as $stepNo => $step) {
 
-		echo '<h3>'.$step['step_name'].'</h3>';
+		// FIELDS QUERY
+		$fields_query = $this->dbQuery("SELECT * FROM fields WHERE step_ID = ".$this->stepID($step['step_slug']));
+		while ($field = $fields_query->fetch()) {
 
-		foreach ($this->inputValues(null, $step['step_slug']) as $question => $answer) {
+			// INPUTS QUERY
+			$inputs_query = $this->dbQuery("SELECT * FROM inputs WHERE field_ID = ".$field['field_ID']);
+			while ($input = $inputs_query->fetch()) {
 
-			if ($question != $step['step_slug']) echo "<h4 style='margin-bottom: -20px; margin-left: 20px;'>".$this->inputName($question)."</h4><br/>";
+				$results[ $step['step_slug'] ][ $field['field_slug'] ][ $input['input_slug'] ]['result'] = $this->inputValues($input['input_slug'], $step['step_slug']);
 
-			echo "<ul>";
-			if (is_array($answer)) {
-				foreach ($answer as $ans) echo "<li>".$ans." -> ".$this->inputTime($ans)."<li/>"; // Separate times by type!!!
-			} else {
-				echo "<li>".$answer." -> ".$this->inputTime($question)."<li/>";
 			}
-			echo "</ul>";
+
 		}
 
 	}
 
 
+	// Big Title
+	echo "<h2>Review Your Choices / Total Hours</h2>";
+
+
+	// Concept Step
+	$editNote = ' <span class="fui-new"></span>';
+	echo '<h3 class="result-steps"><a href="'.$this->stepLink('concept').'">1. '.$this->stepTitle('concept').$editNote.'</a></h3>';
+	echo 'Website Concept: <b>'.$this->mainChoiceTitle( $this->mainChoice() ).'</b>';
+
+
+	// Count total minutes
+	$totalMinutes = 0;
+
+	// 1. List the steps
+	foreach ($results as $stepSlug => $fields) {
+
+		// Show the step number and title
+		echo '<h3 class="result-steps"><a href="'.$this->stepLink($stepSlug).'">'.$this->stepNo($stepSlug).'. '.$this->stepTitle($stepSlug).$editNote.'</a></h3>';
+
+
+		// 2. List the fields in it
+		foreach ($fields as $fieldSlug => $inputs) {
+
+
+			// 3. List the inputs
+			foreach ($inputs as $inputSlug => $inputValues) {
+
+
+				// 4. List the results entered
+				if ( is_array($inputValues['result']) ) {
+
+					// Input Title
+					echo $this->fieldShortName($fieldSlug).": ";
+
+					echo "<b>";
+					foreach ($inputValues['result'] as $inputValue) {
+
+						echo $this->inputShortName($inputSlug, $inputValue);
+
+						if ($showTimes) echo " (".$this->beautifyMinutes( $this->inputTime($inputSlug, $inputValue) ).")";
+
+						// Count minutes
+						$totalMinutes += $this->inputTime($inputSlug, $inputValue);
+
+						// Separators
+						if ($inputValue != end($inputValues['result']))
+							echo ", ";
+						else
+							echo "<br/>";
+
+					}
+					echo "</b>";
+
+				} elseif ( is_numeric($inputValues['result']) ) {
+
+					// Input Title
+					echo $this->inputShortName($inputSlug).": ";
+					echo "<b>".$this->inputShortName($inputSlug, $inputValues['result']);
+
+					if ($showTimes) echo " (".$this->beautifyMinutes( $this->inputTime($inputSlug, $inputValues['result']) ).")";
+
+					// Separator
+					echo "</b><br/>";
+
+					// Count minutes
+					$totalMinutes += $this->inputTime($inputSlug, $inputValues['result']);
+
+				} else {
+
+					// Input Title
+					echo $this->fieldShortName($fieldSlug).": ";
+					echo "<b>".$this->inputShortName($inputSlug, $inputValues['result']);
+
+					if ($showTimes) echo " (".$this->beautifyMinutes( $this->inputTime($inputSlug, $inputValues['result']) ).")";
+
+					// Separator
+					echo "</b><br/>";
+
+					// Count minutes
+					$totalMinutes += $this->inputTime($inputSlug, $inputValues['result']);
+
+				}
+
+			}
+
+
+		}
+
+
+	}
+
+
+	echo "<h1>TOTAL: ".$this->beautifyMinutes( $totalMinutes )."</h1>";
+
+
 /*
+	// ALL ANSWERS FOR DEBUGGING
 	foreach ($_GET as $question => $answer) {
 		echo $question." => ".$answer."<br/><br/>";
 	}
+
+	echo "<pre>".print_r($results, true)."</pre>";
 */
+
 
 
 } else {
@@ -87,7 +190,7 @@ if ( $this->stepSlug("concept") ) {
 
 <?php
 	// 1. Bring the fields belong to this step
-	$temp_data = array('action');
+	$temp_data = array('action', 'action-finish');
 	$inputNo = 0;
 	$fields_query = $this->dbQuery("SELECT * FROM fields WHERE step_ID = ".$this->stepID());
 	while ($field = $fields_query->fetch()) {
@@ -116,13 +219,8 @@ if ( $this->stepSlug("concept") ) {
 			// INPUT TYPES
 			if ($input['input_type'] == "radio") { // RADIO =========
 
-
-				if ( $input['input_slug'] == $this->stepSlug() )
-					$checked =  $this->inputValues($input['input_slug'])[0] == $input['input_value'] ? 'checked' : '';
-				else {
-					$checked = $this->inputValues($input['input_slug']) == $input['input_value'] ? 'checked' : '';
-				}
-
+				// Check if chosen
+				$checked = $this->inputValues($input['input_slug']) == $input['input_value'] ? 'checked' : '';
 		?>
 				<label class="radio primary">
 				    <input
@@ -142,7 +240,11 @@ if ( $this->stepSlug("concept") ) {
 				// Don't increase because it's only one choice
 				//$inputNo++;
 
+
+
 			} elseif ($input['input_type'] == "checkbox") { // CHECKBOX =========
+
+
 
 				// Collect the temp data
 				$temp_data[] = "t_".$input['input_value'];
@@ -154,11 +256,11 @@ if ( $this->stepSlug("concept") ) {
 				}
 
 
-				if ( $input['input_slug'] == $this->stepSlug() )
-					$checked =  $this->inputValues($input['input_slug']) && in_array($input['input_value'], $this->inputValues($input['input_slug'])) ? 'checked' : '';
-				else {
+				// Check if chosen
+				if ( is_array($this->inputValues($input['input_slug'])) )
+					$checked = $this->inputValues($input['input_slug']) && in_array($input['input_value'], $this->inputValues($input['input_slug'])) ? 'checked' : '';
+				else
 					$checked = $this->inputValues($input['input_value']) == $input['input_slug'] ? 'checked' : '';
-				}
 
 			?>
 
@@ -185,7 +287,6 @@ if ( $this->stepSlug("concept") ) {
 
 			?>
 
-
 				<label>
 					<?=$input['input_name']?>
                 	<input
@@ -193,7 +294,7 @@ if ( $this->stepSlug("concept") ) {
                 		style="width: 100px;"
                 		type="<?=$input['input_type']?>"
 				    	name="t_<?=$input['input_slug']?>"
-				    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug'])[0] : $input['input_value']?>"
+				    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug']) : $input['input_value']?>"
 				    	min="0"
 				    	id="<?=$input['input_slug']?>"
 				    	<?=$input['input_disabled'] ? 'disabled' : ''?>
@@ -253,15 +354,25 @@ if ( $this->stepSlug("concept") ) {
 	} // Field Loop
 ?>
 
-		<button type="submit" name="action" class="btn btn-sm btn-primary">Continue</button>
+		<?php
 
+			// BUTTONS
+			if ( !$this->isLastStep($this->stepSlug()) )
+				echo '<button type="submit" name="action" class="btn btn-sm btn-primary">Continue</button> ';
+
+			if ( $this->stepStatus('results') == "skipped" || $this->isLastStep($this->stepSlug()) )
+				echo '<button type="submit" name="action-finish" class="btn btn-sm btn-success">Save and Finish</button>';
+
+		?>
 
 	</form>
 
 <?php
 
 	// Temporary Data sent?
-	if ( isset($_GET['action']) ) {
+	if ( isset($_GET['action']) || isset($_GET['action-finish']) ) {
+
+		$finish = isset($_GET['action-finish']);
 
 		// Prepare the data
 		$data_to_send = "";
@@ -291,7 +402,7 @@ if ( $this->stepSlug("concept") ) {
 		if ($data_to_send == "") $data_to_send = "na";
 
 		// Go to the next step
-		header('Location: '.$this->submitLink( $data_to_send, $this->nextStepSlug(), $temp_data ) );
+		header('Location: '.$this->submitLink( $data_to_send, $finish ? 'results' : $this->nextStepSlug(), $temp_data ) );
 		die();
 
 	}

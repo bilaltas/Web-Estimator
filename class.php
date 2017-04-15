@@ -159,7 +159,7 @@ class WebEstimator {
 
 		$steps = array();
 		$stepNo = 1;
-		$steps_query = $this->dbQuery('SELECT * FROM steps WHERE main_choice_ID = '.$this->mainChoiceCategoryID().' OR main_choice_ID = '.$this->mainChoiceID().' ORDER BY step_order');
+		$steps_query = $this->dbQuery('SELECT step_slug, step_name FROM steps WHERE main_choice_ID = '.$this->mainChoiceCategoryID().' OR main_choice_ID = '.$this->mainChoiceID().' ORDER BY step_order');
 		while ($step = $steps_query->fetch()) {
 
 			$steps[$stepNo] = array(
@@ -217,7 +217,7 @@ class WebEstimator {
 	// == CURRENT STEP ID ==================================================
 	function stepID( $stepSlug = "" ) {
 
-		$stmt = $this->dbQuery("SELECT * FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
+		$stmt = $this->dbQuery("SELECT step_ID FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['step_ID'];
@@ -228,7 +228,7 @@ class WebEstimator {
 	// == STEP TITLE ==================================================
 	function stepTitle($stepSlug = "") {
 
-		$stmt = $this->dbQuery("SELECT * FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
+		$stmt = $this->dbQuery("SELECT step_name FROM steps WHERE step_slug = '".($stepSlug != '' ? $stepSlug : $this->stepSlug())."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['step_name'];
@@ -267,7 +267,7 @@ class WebEstimator {
 	// == MAIN CHOICE TITLE ==================================================
 	function mainChoiceTitle($main_choice = "") {
 
-		$stmt = $this->dbQuery("SELECT * FROM main_choices WHERE main_choice_slug = '".($main_choice != '' ? $main_choice : $this->mainChoice())."' LIMIT 1");
+		$stmt = $this->dbQuery("SELECT main_choice_name FROM main_choices WHERE main_choice_slug = '".($main_choice != '' ? $main_choice : $this->mainChoice())."' LIMIT 1");
 		$row = $stmt->fetch();
 
 		return $row['main_choice_name'];
@@ -319,37 +319,6 @@ class WebEstimator {
 	}
 
 
-	// == INPUT TIME ==================================================
-	function inputTime($inputSlug, $inputValue = "") { // CHECK THIS !!!
-
-		$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
-		$row = $stmt->fetch();
-
-		if ( is_numeric($row['input_time']) )
-			return $row['input_time'];
-		else {
-
-			$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_value = '".$inputSlug."' LIMIT 1");
-			$row = $stmt->fetch();
-
-			return $row['input_time'];
-
-		}
-
-	}
-
-
-	// == INPUT NAME ==================================================
-	function inputName($inputSlug) {
-
-		$stmt = $this->dbQuery("SELECT input_name FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
-		$row = $stmt->fetch();
-
-		return $row['input_name'];
-
-	}
-
-
 	// == STEP STATUS ==================================================
 	function stepStatus($step) {
 
@@ -376,7 +345,168 @@ class WebEstimator {
 	}
 
 
+	// == FIELD SLUG ==================================================
+	function fieldSlug($stepSlug, $fieldIndex = 0) {
+
+		$stmt = $this->dbQuery("SELECT field_slug FROM fields WHERE step_ID = '".$this->stepID($stepSlug)."' LIMIT 1 OFFSET $fieldIndex");
+		$row = $stmt->fetch();
+
+		if ( $row['field_slug'] == "" )
+			return "NOT FOUND";
+		else
+			return $row['field_slug'];
+
+	}
+
+
+	// == FIELD SHORT NAME ==================================================
+	function fieldShortName($fieldSlug) {
+
+		$stmt = $this->dbQuery("SELECT field_short_name FROM fields WHERE field_slug = '".$fieldSlug."' LIMIT 1");
+		$row = $stmt->fetch();
+
+		return $row['field_short_name'];
+
+	}
+
+
+	// == INPUT VALUES  ==================================================
+	function inputValues($findSlug = null, $stepSlug = "") {
+
+		// DATA SAMPLE
+		// &domain=yes&server=other&static_pages=home--about--privacy--terms--contact--more_static-4
+
+
+		// If not stepSlug specified, use the current step slug
+		$stepSlug = $stepSlug != '' ? $stepSlug : $this->stepSlug();
+
+
+		// Parse the fields in the step
+		$fields = explode('--', $_GET[$stepSlug]);
+
+
+		// Parse the field data
+		$values = array();
+		foreach ($fields as $field) {
+
+			if ($field != "current" && $field != "na") {
+
+				if ( strpos($field, "-") ) { // xxxx-y
+
+					$parsedField = explode('-', $field);
+					$inputSlug = $parsedField[0];
+					$inputValue = $parsedField[1];
+
+					$values[$inputSlug] = $inputValue;
+
+				} else { // xxx--yyy--zzz
+
+					$values[$stepSlug][] = $field;
+
+				}
+
+			}
+
+		}
+
+
+		// Check
+		if ( $findSlug !== null ) {
+
+			if ( isset($values[$findSlug]) ) $return = $values[$findSlug];
+			else $return = false;
+
+		} else {
+
+			$return = $values;
+
+		}
+
+
+		// If result is an array and has only one item
+		if ( is_array($return) && count($return) == 1 )
+			return current($return);
+		else
+			return $return;
+
+	}
+
+
+	// == INPUT TIME ==================================================
+	function inputTime($inputSlug, $inputValue = "", $singular = false) {
+
+		$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
+		$row = $stmt->fetch();
+
+		if ( !is_numeric($inputValue) ) {
+			$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_slug = '".$inputSlug."' AND input_value = '".$inputValue."' LIMIT 1");
+			$row = $stmt->fetch();
+
+			$time =  $row['input_time'];
+
+		} else {
+			if ( $singular ) $inputValue = 1;
+			$time =  intval($row['input_time']) * $inputValue;
+		}
+
+		return $time;
+
+	}
+
+
+	// == INPUT NAME ==================================================
+	function inputName($inputSlug, $inputValue = "") {
+
+		if (is_numeric($inputValue)) return $inputValue;
+
+		$stmt = $this->dbQuery("SELECT input_name FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
+
+		if ($inputValue != "" && !is_numeric($inputValue))
+			$stmt = $this->dbQuery("SELECT input_name FROM inputs WHERE input_slug = '".$inputSlug."' AND input_value = '".$inputValue."' LIMIT 1");
+
+		$row = $stmt->fetch();
+
+		return $row['input_name'];
+
+	}
+
+
+	// == INPUT SHORT NAME ==================================================
+	function inputShortName($inputSlug, $inputValue = "") {
+
+		if (is_numeric($inputValue)) return $inputValue;
+
+		$stmt = $this->dbQuery("SELECT input_name, input_short_name FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
+
+		if ($inputValue != "" && !is_numeric($inputValue))
+			$stmt = $this->dbQuery("SELECT input_name, input_short_name FROM inputs WHERE input_slug = '".$inputSlug."' AND input_value = '".$inputValue."' LIMIT 1");
+
+		$row = $stmt->fetch();
+
+		if ($row['input_short_name'] != "")
+			return $row['input_short_name'];
+		else
+			return $row['input_name'];
+
+	}
+
+
 	// == IS FIRST STEP? ==================================================
+	function isLastStep($step) {
+
+		$steps = $this->steps;
+		$totalSteps = count($this->steps);
+		$lastStepNumber = $totalSteps - 1;
+
+		if ( isset($steps[$lastStepNumber]['step_slug']) && $steps[$lastStepNumber]['step_slug'] == $step )
+			return true;
+		else
+			return false;
+
+	}
+
+
+	// == IS LAST STEP? ==================================================
 	function isFirstStep($step) {
 		return ($step == "concept") ? true : false;
 	}
@@ -515,45 +645,28 @@ class WebEstimator {
 	}
 
 
-	// == GET INPUT VALUE  ==================================================
-	function inputValues($key = null, $stepSlug = "") {
+	// == BEAUTIFY MINUTES ==================================================
+	function beautifyMinutes($minutes) {
+	    if ($minutes < 0 || !is_numeric($minutes)) return;
 
-		$stepSlug = $stepSlug != '' ? $stepSlug : $this->stepSlug();
+	    $hours = floor($minutes / 60);
+	    $hoursText = $hours." hour".($hours > 1 ? "s" : "");
 
-		$fields = explode('--', $_GET[$stepSlug]);
+	    $minutes = ($minutes % 60);
+	    $minutesText = $minutes." minute".($minutes > 1 ? "s" : "");
 
-		$new_values = array();
-		foreach ($fields as $field) {
+	    $separator = " ";
+	    if (
+	    	($hours == 0 && $minutes != 0) ||
+			($hours != 0 && $minutes == 0) ||
+			($hours == 0 && $minutes == 0)
+		) $separator = "";
 
-			if ($field != "current" && $field != "na") {
+	    $time = ($hours != 0 ? $hoursText : '').$separator.($minutes != 0 ? $minutesText : '');
 
-				if ( strpos($field, "-") ) { // Is not only-value
+	    if ($time == "") $time = "Nothing";
 
-					$key_val = explode('-', $field);
-					$new_values[$key_val[0]] = $key_val[1];
-
-				} else {
-
-					$new_values[$stepSlug][] = $field;
-
-				}
-
-			}
-
-		}
-
-
-		if ( $key !== null ) {
-
-			if ( isset($new_values[$key]) ) return $new_values[$key];
-			else return false;
-
-		} else {
-
-			return $new_values;
-
-		}
-
+	    return $time;
 	}
 
 

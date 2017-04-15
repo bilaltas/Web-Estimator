@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 14, 2017 at 02:13 PM
+-- Generation Time: Apr 16, 2017 at 12:59 AM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -30,6 +30,7 @@ CREATE TABLE `fields` (
   `field_ID` int(10) NOT NULL,
   `field_slug` varchar(60) NOT NULL,
   `field_name` varchar(300) NOT NULL,
+  `field_short_name` varchar(100) NOT NULL,
   `field_required` tinyint(1) NOT NULL DEFAULT '1',
   `step_ID` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -38,17 +39,17 @@ CREATE TABLE `fields` (
 -- Dumping data for table `fields`
 --
 
-INSERT INTO `fields` (`field_ID`, `field_slug`, `field_name`, `field_required`, `step_ID`) VALUES
-(1, 'domain', 'Will you provide us a domain to use on your project?', 1, 1),
-(2, 'server', 'Do you have a hosting package to use on your project?', 1, 2),
-(3, 'static', 'Check the static pages you want to add into your website.', 1, 3),
-(4, 'dynamic', 'Check the dynamic pages you want to add into your website.', 0, 4),
-(5, 'products', 'How many products do you want to add your website for first?', 1, 5),
-(6, 'product_image', 'Do you have your images/illustrations to use for the products?', 1, 6),
-(7, 'product_watermark', 'Would you like to secure your product images with a watermark?', 1, 6),
-(8, 'payment_method', 'Which payment methods will your website use?', 1, 7),
-(9, 'ssl', 'Do you want to purchase a SSL Security Certificate? SSL is especially recommended for e-Commerce websites.', 1, 7),
-(10, 'additional', 'Check the services you also want to get.', 0, 8);
+INSERT INTO `fields` (`field_ID`, `field_slug`, `field_name`, `field_short_name`, `field_required`, `step_ID`) VALUES
+(1, 'domain', 'Will you provide us a domain to use on your project?', 'Domain', 1, 1),
+(2, 'server', 'Do you have a hosting package to use on your project?', 'Server', 1, 2),
+(3, 'static', 'Check the static pages you want to add into your website.', 'Static Pages', 1, 3),
+(4, 'dynamic', 'Check the dynamic pages you want to add into your website.', 'Dynamic Pages', 0, 4),
+(5, 'products', 'How many products do you want to add your website for first?', 'Initial Products', 1, 5),
+(6, 'product_image', 'Do you have your images/illustrations to use for the products?', 'Product Images', 1, 6),
+(7, 'product_watermark', 'Would you like to secure your product images with a watermark?', 'Product Image Watermark', 1, 6),
+(8, 'payment_method', 'Which payment methods will your website use?', 'Payment Method', 1, 7),
+(9, 'ssl', 'Do you want to purchase a SSL Security Certificate? SSL is especially recommended for e-Commerce websites.', 'SSL Certificate', 1, 7),
+(10, 'additional', 'Check the services you also want to get.', 'Additional Services', 0, 8);
 
 -- --------------------------------------------------------
 
@@ -60,6 +61,7 @@ CREATE TABLE `inputs` (
   `input_ID` int(10) NOT NULL,
   `input_slug` varchar(60) NOT NULL,
   `input_name` varchar(100) NOT NULL,
+  `input_short_name` varchar(100) NOT NULL,
   `input_description` varchar(300) NOT NULL,
   `input_value` varchar(60) NOT NULL,
   `input_required` tinyint(1) NOT NULL DEFAULT '1',
@@ -74,45 +76,45 @@ CREATE TABLE `inputs` (
 -- Dumping data for table `inputs`
 --
 
-INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_description`, `input_value`, `input_required`, `input_disabled`, `input_time`, `input_type`, `input_checkbox_name`, `field_ID`) VALUES
-(1, 'domain', 'Yes, I already have my website\'s domain', '', 'yes', 1, 0, 0, 'radio', NULL, 1),
-(2, 'domain', 'No, we will buy a new domain', '', 'no', 1, 0, 15, 'radio', NULL, 1),
-(5, 'server', 'Yes, It is a <b>Linux Hosting</b>', '', 'linux', 1, 0, 0, 'radio', NULL, 2),
-(6, 'server', 'Yes, It is a <b>Windows Hosting</b>', '', 'windows', 1, 0, 30, 'radio', NULL, 2),
-(7, 'server', 'Other or not sure', '', 'other', 1, 0, 40, 'radio', NULL, 2),
-(8, 'server', 'No, we will buy a new hosting', '', 'no', 1, 0, 30, 'radio', NULL, 2),
-(9, 'static_pages', 'Home Page', '', 'home', 1, 1, 360, 'checkbox', NULL, 3),
-(10, 'static_pages', 'About Us Page', '', 'about', 0, 0, 60, 'checkbox', NULL, 3),
-(11, 'static_pages', 'Privacy Policy Page', '', 'privacy', 0, 0, 40, 'checkbox', NULL, 3),
-(12, 'static_pages', 'Terms and Conditions Page', '', 'terms', 0, 0, 40, 'checkbox', NULL, 3),
-(13, 'static_pages', 'Contact Us Page', '', 'contact', 0, 0, 60, 'checkbox', NULL, 3),
-(14, 'more_static', 'and', 'more custom static page(s)', '0', 0, 0, 60, 'number', NULL, 3),
-(15, 'blog_posts', 'How many blog posts do you want to add for first?', 'blog post(s)', '1', 0, 0, 10, 'number-checktoshow', 'Blog Page', 4),
-(16, 'portfolio', 'How many portfolio items do you want to add for first?', 'portfolio item(s)', '1', 0, 0, 30, 'number-checktoshow', 'Portfolio Page', 4),
-(17, 'ecommerce_products', '', 'products(s)', '1', 1, 0, 20, 'number', NULL, 5),
-(18, 'ecommerce_images', 'Yes, I have. / They will be ready.', '', 'yes', 1, 0, 0, 'radio', NULL, 6),
-(19, 'ecommerce_images', 'Yes, but not all the products. I need a photography service for rest of my products.', '', 'half', 1, 0, 0, 'radio', NULL, 6),
-(20, 'ecommerce_images', 'No, I don\'t. I need a photography service for all my products.', '', 'no', 1, 0, 0, 'radio', NULL, 6),
-(21, 'watermark', 'Yes, I would.', '', 'yes', 1, 0, 0, 'radio', NULL, 7),
-(22, 'watermark', 'No, I don\'t need that.', '', 'no', 1, 0, 0, 'radio', NULL, 7),
-(23, 'ecommerce_payment', 'Via PayPal (No requirements)', '', 'paypal', 0, 0, 30, 'checkbox', NULL, 8),
-(24, 'ecommerce_payment', 'Credit Card Direct Payment (Needs some merchandise information)', '', 'card', 0, 0, 360, 'checkbox', NULL, 8),
-(25, 'ecommerce_payment', 'Others (Wire, Pay on Delivery, etc. )', '', 'other', 0, 0, 360, 'checkbox', NULL, 8),
-(26, 'ecommerce_ssl', 'Yes, I do.', '', 'yes', 1, 0, 15, 'radio', NULL, 9),
-(27, 'ecommerce_ssl', 'No, I don\'t want it.', '', 'no', 1, 0, 0, 'radio', NULL, 9),
-(28, 'additional', 'Logo Design', 'Description', 'logo', 0, 0, 500, 'checkbox', NULL, 10),
-(29, 'additional', 'Custom Under Construction Page', 'Description', 'underconstruction', 0, 0, 360, 'checkbox', NULL, 10),
-(30, 'additional', 'Content Writing Service', 'Description', 'content', 0, 0, 360, 'checkbox', NULL, 10),
-(31, 'additional', 'Social Media Management', 'Description', 'social', 0, 0, 360, 'checkbox', NULL, 10),
-(32, 'additional', 'Speed Optimization', 'Description', 'speed', 0, 0, 360, 'checkbox', NULL, 10),
-(33, 'additional', 'Organic Search Engine Optimization', 'Description', 'seo', 0, 0, 360, 'checkbox', NULL, 10),
-(34, 'additional', 'Marketing & Advertisement', 'Description', 'ads', 0, 0, 360, 'checkbox', NULL, 10),
-(35, 'additional', 'Auto/Cloud Backup', 'Description', 'backup', 0, 0, 360, 'checkbox', NULL, 10),
-(36, 'additional', 'Extra Security', 'Description', 'security', 0, 0, 360, 'checkbox', NULL, 10),
-(37, 'additional', 'Newsletter', 'Description', 'newsletter', 0, 0, 360, 'checkbox', NULL, 10),
-(38, 'additional', 'Live Support Chat Feature', 'Description', 'chat', 0, 0, 360, 'checkbox', NULL, 10),
-(39, 'additional', 'Periodic Maintenance & Updates', 'Description', 'maintenance', 0, 0, 360, 'checkbox', NULL, 10),
-(40, 'additional', 'Custom Requests & Programs', 'Description', 'custom', 0, 0, 360, 'checkbox', NULL, 10);
+INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_short_name`, `input_description`, `input_value`, `input_required`, `input_disabled`, `input_time`, `input_type`, `input_checkbox_name`, `field_ID`) VALUES
+(1, 'domain', 'Yes, I already have my website\'s domain', 'Yes', '', 'yes', 1, 0, 0, 'radio', NULL, 1),
+(2, 'domain', 'No, we will buy a new domain', 'No', '', 'no', 1, 0, 15, 'radio', NULL, 1),
+(5, 'server', 'Yes, It is a <b>Linux Hosting</b>', 'Linux', '', 'linux', 1, 0, 0, 'radio', NULL, 2),
+(6, 'server', 'Yes, It is a <b>Windows Hosting</b>', 'Windows', '', 'windows', 1, 0, 30, 'radio', NULL, 2),
+(7, 'server', 'Other or not sure', 'Other or not sure', '', 'other', 1, 0, 40, 'radio', NULL, 2),
+(8, 'server', 'No, we will buy a new hosting', 'No', '', 'no', 1, 0, 30, 'radio', NULL, 2),
+(9, 'static_pages', 'Home Page', 'Home Page', '', 'home', 1, 1, 360, 'checkbox', NULL, 3),
+(10, 'static_pages', 'About Us Page', 'About Page', '', 'about', 0, 0, 60, 'checkbox', NULL, 3),
+(11, 'static_pages', 'Privacy Policy Page', 'Privacy Page', '', 'privacy', 0, 0, 40, 'checkbox', NULL, 3),
+(12, 'static_pages', 'Terms and Conditions Page', 'Terms Page', '', 'terms', 0, 0, 40, 'checkbox', NULL, 3),
+(13, 'static_pages', 'Contact Us Page', 'Contact Page', '', 'contact', 0, 0, 60, 'checkbox', NULL, 3),
+(14, 'more_static', 'and', 'More Custom Static Page', 'more custom static page(s)', '0', 0, 0, 60, 'number', NULL, 3),
+(15, 'blog_posts', 'How many blog posts do you want to add for first?', 'Blog Posts', 'blog post(s)', '1', 0, 0, 10, 'number-checktoshow', 'Blog Page', 4),
+(16, 'portfolio', 'How many portfolio items do you want to add for first?', 'Portfolio Pages', 'portfolio item(s)', '1', 0, 0, 30, 'number-checktoshow', 'Portfolio Page', 4),
+(17, 'ecommerce_products', '', 'Initial Products', 'products(s)', '1', 1, 0, 20, 'number', NULL, 5),
+(18, 'ecommerce_images', 'Yes, I have. / They will be ready.', 'All ready', '', 'yes', 1, 0, 0, 'radio', NULL, 6),
+(19, 'ecommerce_images', 'Yes, but not all the products. I need a photography service for rest of my products.', 'Not all', '', 'half', 1, 0, 30, 'radio', NULL, 6),
+(20, 'ecommerce_images', 'No, I don\'t. I need a photography service for all my products.', 'No', '', 'no', 1, 0, 30, 'radio', NULL, 6),
+(21, 'watermark', 'Yes, I would.', 'Yes', '', 'yes', 1, 0, 30, 'radio', NULL, 7),
+(22, 'watermark', 'No, I don\'t need that.', 'No', '', 'no', 1, 0, 0, 'radio', NULL, 7),
+(23, 'ecommerce_payment', 'Via PayPal (No requirements)', 'Paypal', '', 'paypal', 0, 0, 30, 'checkbox', NULL, 8),
+(24, 'ecommerce_payment', 'Credit Card Direct Payment (Needs some merchandise information)', 'Credit Card', '', 'card', 0, 0, 360, 'checkbox', NULL, 8),
+(25, 'ecommerce_payment', 'Others (Wire, Pay on Delivery, etc. )', 'Other', '', 'other', 0, 0, 360, 'checkbox', NULL, 8),
+(26, 'ecommerce_ssl', 'Yes, I do.', 'Yes', '', 'yes', 1, 0, 15, 'radio', NULL, 9),
+(27, 'ecommerce_ssl', 'No, I don\'t want it.', 'No', '', 'no', 1, 0, 0, 'radio', NULL, 9),
+(28, 'additional', 'Logo Design', '', 'Description', 'logo', 0, 0, 500, 'checkbox', NULL, 10),
+(29, 'additional', 'Custom Under Construction Page', '', 'Description', 'underconstruction', 0, 0, 360, 'checkbox', NULL, 10),
+(30, 'additional', 'Content Writing Service', '', 'Description', 'content', 0, 0, 360, 'checkbox', NULL, 10),
+(31, 'additional', 'Social Media Management', '', 'Description', 'social', 0, 0, 360, 'checkbox', NULL, 10),
+(32, 'additional', 'Speed Optimization', '', 'Description', 'speed', 0, 0, 360, 'checkbox', NULL, 10),
+(33, 'additional', 'Organic Search Engine Optimization', 'SEO', 'Description', 'seo', 0, 0, 360, 'checkbox', NULL, 10),
+(34, 'additional', 'Marketing & Advertisement', '', 'Description', 'ads', 0, 0, 360, 'checkbox', NULL, 10),
+(35, 'additional', 'Auto/Cloud Backup', 'Backup', 'Description', 'backup', 0, 0, 360, 'checkbox', NULL, 10),
+(36, 'additional', 'Extra Security', 'Security', 'Description', 'security', 0, 0, 360, 'checkbox', NULL, 10),
+(37, 'additional', 'Newsletter', '', 'Description', 'newsletter', 0, 0, 360, 'checkbox', NULL, 10),
+(38, 'additional', 'Live Support Chat Feature', '', 'Description', 'chat', 0, 0, 360, 'checkbox', NULL, 10),
+(39, 'additional', 'Periodic Maintenance & Updates', 'Maintenance', 'Description', 'maintenance', 0, 0, 360, 'checkbox', NULL, 10),
+(40, 'additional', 'Custom Requests & Programs', 'Custom', 'Description', 'custom', 0, 0, 360, 'checkbox', NULL, 10);
 
 -- --------------------------------------------------------
 
