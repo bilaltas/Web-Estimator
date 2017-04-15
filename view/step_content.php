@@ -182,23 +182,29 @@ if ( $this->stepSlug("concept") ) {
 	echo "<h1>TOTAL: ".$this->beautifyMinutes( $totalMinutes )."</h1>";
 
 
-	// TO-DO
-	// $ calculation with hourly rate
-	// Ask a rate to calculate?
 
-	// Share this project?
-
-	// Users table on DB
-	// Admin management on Choices, Steps, Fields, Inputs, ...
 
 
 
 	/*
+
+		TO-DO:
+
+		* Calculate the deadline!! (By adding daily work hours!)
+		* $ calculation with hourly rate (By adding hourly rate!)
+		* Ask a rate to calculate?
+		* Users table on DB
+
+		* Share this project?
+
+		* Admin management on Choices, Steps, Fields, Inputs, ...
+
+
 		Description:
 
 		1. Install the script to your server
 		2. Customize services and steps
-		3. Enter your hourly rate
+		3. Enter your hourly rate, daily work hours
 
 		and ready to serve!
 
