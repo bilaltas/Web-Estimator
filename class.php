@@ -103,15 +103,29 @@ class WebEstimator {
 	// == LOG IN ==================================================
 	function logIn() {
 
-		$username = stripslashes($_POST["login-name"]);
+		$userName = stripslashes($_POST["login-name"]);
 		$password = stripslashes($_POST["login-pass"]);
 
-		if ( ($username=="admin" && $password=="121212") || ($username=="cuneyttas" && $password=="121212") ) {
-			$_SESSION['login_user'] = $username;
-			header("location: ".$_SERVER['HTTP_REFERER']);
-			die();
-		}else {
-			echo "ERROR";
+
+		$stmt = $this->dbQuery("SELECT * FROM users WHERE user_name='".$userName."' OR user_email='".$userName."' LIMIT 1");
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		if($stmt->rowCount() > 0) {
+
+			if(password_verify($password, $row['user_password'])) {
+
+				$_SESSION['user_ID'] = $row['user_ID'];
+
+				header("location: ".$this->removeQueryArg('error', $_SERVER['HTTP_REFERER']) );
+				die();
+
+			} else {
+
+				header("location: ".$this->queryArg('error', 'wrong-password', $_SERVER['HTTP_REFERER']) );
+				die();
+
+			}
+
 		}
 
 	}
@@ -130,7 +144,21 @@ class WebEstimator {
 
 	// == USER LOGGED IN? ==================================================
 	function isLoggedIn() {
-		return ( isset($_SESSION['login_user']) ) ? true : false;
+		return ( isset($_SESSION['user_ID']) ) ? true : false;
+	}
+
+
+	// == CURRENT USER INFO ==================================================
+	function userInfo($info, $userID = "") {
+
+		if ( !$this->isLoggedIn() ) return false;
+		if ( $userID == "" ) $userID = $_SESSION['user_ID'];
+
+		$stmt = $this->dbQuery("SELECT * FROM users WHERE user_ID='".$userID."' LIMIT 1");
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		return $row[$info];
+
 	}
 
 
@@ -203,9 +231,9 @@ class WebEstimator {
 			$new_gets = array_flip($_GET);
 
 			if ($isStepSlug != "" ) {
-				return ($isStepSlug == $new_gets['current'] ? true : false);
+				return (isset($new_gets['current']) && $isStepSlug == $new_gets['current'] ? true : false);
 			} else {
-				return $new_gets['current'];
+				return (isset($new_gets['current']) ? $new_gets['current'] : 'other');
 			}
 
 
@@ -602,7 +630,7 @@ class WebEstimator {
 			// Build new query
 			$newQuery = http_build_query($params);
 
-			return $parsed['scheme']."://".$parsed['host'].$parsed['path']."?".$newQuery;
+			return $parsed['scheme']."://".$parsed['host'].$parsed['path'].(empty($newQuery) ? "" : "?").$newQuery;
 
 		} else {
 

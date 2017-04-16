@@ -48,8 +48,8 @@ if ( $this->stepSlug("concept") ) {
 <?php
 } elseif ( $this->stepSlug("results") ) { // RESULTS PAGE ============================================
 
-	// IF ADMIN? CHECK HERE !!!
-	$showTimes = false;
+	// IF ADMIN?
+	$showTimes = $this->userInfo('user_level') == 0 ? true : false;
 
 
 	// STEPS QUERY
@@ -179,12 +179,46 @@ if ( $this->stepSlug("concept") ) {
 	}
 
 
-	echo "<h1>TOTAL: ".$this->beautifyMinutes( $totalMinutes )."</h1>";
+	echo "<br/><br/><br/><h1 style='text-align: center;'>TOTAL: ".$this->beautifyMinutes( $totalMinutes )."</h1>";
 
+?>
 
+<div class="share-results">
 
+	<h4>Share this project!</h4>
 
+	<!-- Twitter (url, text, @mention) -->
+	<a href="http://twitter.com/share?url=<?=urlencode( $this->currentPageURL() )?>&text=<?=urlencode("My Project's Deadline:")?>&via=bilaltas" target="_blank">
+	    <span class="fui-twitter"></span>
+	</a>
 
+	<!-- Google Plus (url) -->
+	<a href="https://plus.google.com/share?url=<?=urlencode( $this->currentPageURL() )?>" target="_blank">
+	    <span class="fui-google-plus"></span>
+	</a>
+
+	<!-- Facebook (url) -->
+	<a href="http://www.facebook.com/sharer/sharer.php?u=<?=urlencode( $this->currentPageURL() )?>" target="_blank">
+	    <span class="fui-facebook"></span>
+	</a>
+
+	<!-- StumbleUpon (url, title) -->
+	<a href="http://www.stumbleupon.com/submit?url=<?=urlencode( $this->currentPageURL() )?>&title=<?=urlencode("My Project's Deadline")?>" target="_blank">
+	    <span class="fui-stumbleupon"></span>
+	</a>
+
+	<!-- LinkedIn (url, title, summary, source url) -->
+	<a href="http://www.linkedin.com/shareArticle?url=<?=urlencode( $this->currentPageURL() )?>&title=<?=urlencode("My Project's Deadline")?>&summary=<?=urlencode("You can find it here!")?>&source=<?=$this->currentPageURL()?>" target="_blank">
+	    <span class="fui-linkedin"></span>
+	</a>
+
+	<!-- Email (subject, body) -->
+	<a href="mailto:?subject=My Project's Deadline&body=<?=urlencode( $this->currentPageURL() )?>">
+	    <span class="fui-mail"></span>
+	</a>
+
+</div>
+<?php
 
 	/*
 
@@ -193,10 +227,6 @@ if ( $this->stepSlug("concept") ) {
 		* Calculate the deadline!! (By adding daily work hours!)
 		* $ calculation with hourly rate (By adding hourly rate!)
 		* Ask a rate to calculate?
-		* Users table on DB
-
-		* Share this project?
-
 		* Admin management on Choices, Steps, Fields, Inputs, ...
 
 
@@ -204,9 +234,9 @@ if ( $this->stepSlug("concept") ) {
 
 		1. Install the script to your server
 		2. Customize services and steps
-		3. Enter your hourly rate, daily work hours
+		3. Enter your hourly rate and daily work hours
 
-		and ready to serve!
+		and it's ready to serve!
 
 	*/
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 16, 2017 at 01:58 AM
+-- Generation Time: Apr 16, 2017 at 11:39 AM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -186,6 +186,32 @@ INSERT INTO `steps` (`step_ID`, `step_slug`, `step_name`, `step_order`, `main_ch
 (8, 'additional', 'Additional Features and Services', 8, 20),
 (9, 'results', 'Results Page', 9, 20);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `user_ID` int(10) NOT NULL,
+  `user_name` varchar(60) NOT NULL,
+  `user_email` varchar(100) NOT NULL,
+  `user_password` varchar(255) NOT NULL,
+  `user_title` varchar(10) NOT NULL,
+  `user_first_name` varchar(100) NOT NULL,
+  `user_last_name` varchar(60) NOT NULL,
+  `user_level` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_ID`, `user_name`, `user_email`, `user_password`, `user_title`, `user_first_name`, `user_last_name`, `user_level`) VALUES
+(1, 'bilal', 'bilaltas@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Bilal', 'TAŞ', 0),
+(2, 'kubilay', 'oren.kubilay@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Kubilay', 'Ören', 1),
+(3, 'murat', 'kubilay.bicakci@outlook.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Murat Kubilay', 'Bıçakçı', 1);
+
 --
 -- Indexes for dumped tables
 --
@@ -218,6 +244,12 @@ ALTER TABLE `steps`
   ADD KEY `main_choice_ID` (`main_choice_ID`);
 
 --
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_ID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -241,6 +273,11 @@ ALTER TABLE `main_choices`
 --
 ALTER TABLE `steps`
   MODIFY `step_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- Constraints for dumped tables
 --

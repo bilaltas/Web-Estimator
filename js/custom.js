@@ -11,7 +11,7 @@ $(function () { // Document is ready
 
 
 	// Page scroll to content
-	if ( $('body').hasClass('other') )
+	if ( $('body').hasClass('other') && $('#big-title').length )
 		$(window).scrollTop($('#big-title').offset().top);
 
 

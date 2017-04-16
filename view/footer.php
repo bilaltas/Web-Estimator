@@ -26,8 +26,8 @@
 <h5 class="footer-title">If you are a registered user, please sign in!
 	<small title="They are the companies who offer their clients website service and are getting special discount by lower hourly rate than our standart hourly rate." data-toggle="tooltip" data-placement="top">Who are they?</small>
 </h5>' : '
-<h5 class="footer-title" style="line-height: 20px;">Welcome Mr.
-<span style="text-transform: capitalize;">'.$_SESSION['login_user'].'</span><br/>
+<h5 class="footer-title" style="line-height: 20px;">Welcome '.$this->userInfo('user_title').'
+<span style="text-transform: capitalize;">'.$this->userInfo('user_first_name').' '.$this->userInfo('user_last_name').'</span><br/>
 	<a href="'.$this->currentPageURL("logout").'" style="text-decoration: none;">
 		<small title="Log-out" data-toggle="tooltip" data-placement="top">This is not you?</small>
 	</a>

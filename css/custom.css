@@ -250,3 +250,11 @@ ul, li {
     font-size: 24px;
     color: #E67E22;
 }
+
+.share-results {
+    text-align: center;
+}
+
+.share-results a {
+    margin: 0 20px;
+}
