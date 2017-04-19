@@ -21,7 +21,8 @@ class WebEstimator {
 		$this->steps = $this->listSteps();
 
 		// Login
-		if ( isset($_GET["login"]) && isset($_POST["login-name"]) && isset($_POST["login-pass"]) ) $this->logIn();
+		if ( isset($_GET["login"]) && isset($_POST["login-name"]) && isset($_POST["login-pass"]) )
+			$this->logIn($_POST["login-name"], $_POST["login-pass"]);
 
 		// Logout
 		if ( isset($_GET["logout"]) ) $this->logOut();
@@ -101,30 +102,26 @@ class WebEstimator {
 
 
 	// == LOG IN ==================================================
-	function logIn() {
+	function logIn($userName, $password) {
 
-		$userName = stripslashes($_POST["login-name"]);
-		$password = stripslashes($_POST["login-pass"]);
-
+		$userName = stripslashes($userName);
+		$password = stripslashes($password);
 
 		$stmt = $this->dbQuery("SELECT * FROM users WHERE user_name='".$userName."' OR user_email='".$userName."' LIMIT 1");
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-		if($stmt->rowCount() > 0) {
 
-			if(password_verify($password, $row['user_password'])) {
+		if($stmt->rowCount() > 0 && password_verify($password, $row['user_password'])) {
 
-				$_SESSION['user_ID'] = $row['user_ID'];
+			$_SESSION['user_ID'] = $row['user_ID'];
 
-				header("location: ".$this->removeQueryArg('error', $_SERVER['HTTP_REFERER']) );
-				die();
+			header("location: ".$this->removeQueryArg('error', $_SERVER['HTTP_REFERER']) );
+			die();
 
-			} else {
+		} else {
 
-				header("location: ".$this->queryArg('error', 'wrong-password', $_SERVER['HTTP_REFERER']) );
-				die();
-
-			}
+			header("location: ".$this->queryArg('error', 'wrong', $_SERVER['HTTP_REFERER']) );
+			die();
 
 		}
 
@@ -135,7 +132,7 @@ class WebEstimator {
 	function logOut() {
 
 		if( session_destroy() ) {
-			header("Location: ".$_SERVER['HTTP_REFERER']); // Redirecting To Home Page
+			header("Location: ".$_SERVER['HTTP_REFERER']); // Redirecting to previous page
 			die();
 		}
 
