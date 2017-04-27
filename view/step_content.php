@@ -224,10 +224,14 @@ if ( $this->stepSlug("concept") ) {
 
 		TO-DO:
 
+		* Check the duplication rules
+		* Admin management on Choices, Steps, Fields, Inputs(DONE), ...
+		* Create a Settings Page:
+			* Daily work hours
+			* Hourly Rate and Currency
 		* Calculate the deadline!! (By adding daily work hours!)
 		* $ calculation with hourly rate (By adding hourly rate!)
 		* Ask a rate to calculate?
-		* Admin management on Choices, Steps, Fields, Inputs, ...
 
 
 		Description:
@@ -251,7 +255,7 @@ if ( $this->stepSlug("concept") ) {
 
 
 
-} else {
+} else { // SHOW THE QUESTIONS ====================================================================================================
 ?>
 
 	<form role="form">
@@ -268,157 +272,164 @@ if ( $this->stepSlug("concept") ) {
 	while ($field = $fields_query->fetch()) {
 ?>
 
-		<h3>
-			<?php
-			echo $field['field_name'];
-			if (!$field['field_required']) echo '<br/><span style="color: #ECF0F1;">(Optional)</span>';
-			?>
-		</h3>
+		<div class="field">
+			<h3>
+				<?php
+				echo $field['field_name'];
+				if (!$field['field_required']) echo '<br/><span style="color: #ECF0F1;">(Optional)</span>';
+				?>
+			</h3>
 
-		<div class="form-group">
-
-		<?php
-
-		// 2. Bring the inputs belong to that field above
-		$inputs_query = $this->dbQuery("SELECT * FROM inputs WHERE field_ID = ".$field['field_ID']);
-		while ($input = $inputs_query->fetch()) {
-
-			// Collect the temp data
-			$temp_data[] = "t_".$input['input_slug'];
-
-
-
-			// INPUT TYPES
-			if ($input['input_type'] == "radio") { // RADIO =========
-
-				// Check if chosen
-				$checked = $this->inputValues($input['input_slug']) == $input['input_value'] ? 'checked' : '';
-		?>
-				<label class="radio primary">
-				    <input
-                		type="<?=$input['input_type']?>"
-				    	data-toggle="radio"
-				    	name="t_<?=$input['input_slug']?>"
-				    	value="<?=$input['input_value']?>"
-				    	id="<?=$input['input_slug']?>"
-				    	<?=$checked?>
-				    	<?=$input['input_required'] ? 'required' : ''?>
-				    >
-				    <?=$input['input_name']?>
-					<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
-				</label>
+			<div class="form-group">
 
 			<?php
-				// Don't increase because it's only one choice
-				//$inputNo++;
 
-
-
-			} elseif ($input['input_type'] == "checkbox") { // CHECKBOX =========
-
-
+			// 2. Bring the inputs belong to that field above
+			$inputs_query = $this->dbQuery("SELECT * FROM inputs WHERE field_ID = ".$field['field_ID']);
+			while ($input = $inputs_query->fetch()) {
 
 				// Collect the temp data
-				$temp_data[] = "t_".$input['input_value'];
+				$temp_data[] = "t_".$input['input_slug'];
 
-				// Send the disabled ones
-				if ($input['input_disabled']) {
-					if ($input['input_required']) echo '<input type="hidden" name="t_'.$input['input_value'].'" value="'.$input['input_slug'].'">';
-					$inputNo--;
+
+
+				// INPUT TYPES
+				if ($input['input_type'] == "radio") { // RADIO =========
+
+					// Check if chosen
+					$checked = $this->inputValues($input['input_slug']) == $input['input_value'] ? 'checked' : '';
+			?>
+					<label class="radio primary">
+					    <input
+	                		type="<?=$input['input_type']?>"
+					    	data-toggle="radio"
+					    	name="t_<?=$input['input_slug']?>"
+					    	value="<?=$input['input_value']?>"
+					    	id="<?=$input['input_ID']?>"
+					    	<?=$checked?>
+					    	<?=$input['input_required'] ? 'required' : ''?>
+					    >
+					    <?=$input['input_name']?>
+						<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
+						<?=$this->inputAdmin($input['input_ID'])?>
+					</label>
+
+				<?php
+					// Don't increase because it's only one choice
+					//$inputNo++;
+
+
+
+				} elseif ($input['input_type'] == "checkbox") { // CHECKBOX =========
+
+
+
+					// Collect the temp data
+					$temp_data[] = "t_".$input['input_value'];
+
+					// Send the disabled ones
+					if ($input['input_disabled']) {
+						if ($input['input_required']) echo '<input type="hidden" name="t_'.$input['input_value'].'" value="'.$input['input_slug'].'">';
+						$inputNo--;
+					}
+
+
+					// Check if chosen
+					if ( is_array($this->inputValues($input['input_slug'])) )
+						$checked = $this->inputValues($input['input_slug']) && in_array($input['input_value'], $this->inputValues($input['input_slug'])) ? 'checked' : '';
+					else
+						$checked = $this->inputValues($input['input_value']) == $input['input_slug'] ? 'checked' : '';
+
+				?>
+
+					<label class="checkbox">
+	                	<input
+	                		type="<?=$input['input_type']?>"
+	                		data-toggle="checkbox"
+					    	name="t_<?=$input['input_value']?>"
+					    	value="<?=$input['input_slug']?>"
+					    	id="<?=$input['input_ID']?>"
+					    	<?=$checked?>
+					    	<?=$input['input_disabled'] ? 'disabled '.($input['input_required'] ? 'checked' : '') : ''?>
+	                	>
+						<?=$input['input_name']?>
+						<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
+						<?=$this->inputAdmin($input['input_ID'])?>
+					</label>
+
+
+				<?php
+
+					$inputNo++;
+
+				} elseif ($input['input_type'] == "number") { // NUMBER =========
+
+				?>
+
+					<label>
+						<?=$input['input_name']?>
+	                	<input
+	                		class="form-control input-hg"
+	                		style="width: 100px;"
+	                		type="<?=$input['input_type']?>"
+					    	name="t_<?=$input['input_slug']?>"
+					    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug']) : $input['input_value']?>"
+					    	min="0"
+					    	id="<?=$input['input_ID']?>"
+					    	<?=$input['input_disabled'] ? 'disabled' : ''?>
+					    	<?=$input['input_required'] ? 'required' : ''?>
+	                	>
+						<?=$input['input_description']?>
+						<?=$this->inputAdmin($input['input_ID'])?>
+					</label>
+
+
+				<?php
+
+					$inputNo++;
+
+				} elseif ($input['input_type'] == "number-checktoshow") { // CHECK TO SHOW NUMBER =========
+				?>
+
+					<label class="checkbox checktoshow">
+						<input type="checkbox" data-toggle="checkbox" <?=$this->inputValues($input['input_slug']) ? 'checked' : ''?>>
+						<?=$input['input_checkbox_name']?>
+					</label>
+
+					<label style="<?=$this->inputValues($input['input_slug']) ? '' : 'display: none;'?>">
+						<?=$input['input_name']?>
+	                	<input
+	                		class="form-control input-hg"
+	                		style="width: 100px;"
+	                		type="number"
+					    	name="t_<?=$input['input_slug']?>"
+					    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug']) : $input['input_value']?>"
+					    	min="0"
+					    	id="<?=$input['input_ID']?>"
+					    	<?=$this->inputValues($input['input_slug']) ? '' : 'disabled'?>
+	                	>
+						<?=$input['input_description']?>
+						<?=$this->inputAdmin($input['input_ID'])?>
+					</label>
+
+
+				<?php
+
+					$inputNo++;
+
 				}
+				?>
 
-
-				// Check if chosen
-				if ( is_array($this->inputValues($input['input_slug'])) )
-					$checked = $this->inputValues($input['input_slug']) && in_array($input['input_value'], $this->inputValues($input['input_slug'])) ? 'checked' : '';
-				else
-					$checked = $this->inputValues($input['input_value']) == $input['input_slug'] ? 'checked' : '';
-
-			?>
-
-				<label class="checkbox">
-                	<input
-                		type="<?=$input['input_type']?>"
-                		data-toggle="checkbox"
-				    	name="t_<?=$input['input_value']?>"
-				    	value="<?=$input['input_slug']?>"
-				    	id="<?=$input['input_slug']?>"
-				    	<?=$checked?>
-				    	<?=$input['input_disabled'] ? 'disabled '.($input['input_required'] ? 'checked' : '') : ''?>
-                	>
-					<?=$input['input_name']?>
-					<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
-				</label>
 
 
 			<?php
-
-				$inputNo++;
-
-			} elseif ($input['input_type'] == "number") { // NUMBER =========
-
-			?>
-
-				<label>
-					<?=$input['input_name']?>
-                	<input
-                		class="form-control input-hg"
-                		style="width: 100px;"
-                		type="<?=$input['input_type']?>"
-				    	name="t_<?=$input['input_slug']?>"
-				    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug']) : $input['input_value']?>"
-				    	min="0"
-				    	id="<?=$input['input_slug']?>"
-				    	<?=$input['input_disabled'] ? 'disabled' : ''?>
-				    	<?=$input['input_required'] ? 'required' : ''?>
-                	>
-					<?=$input['input_description']?>
-				</label>
-
-
-			<?php
-
-				$inputNo++;
-
-			} elseif ($input['input_type'] == "number-checktoshow") { // CHECK TO SHOW NUMBER =========
-			?>
-
-				<label class="checkbox checktoshow">
-					<input type="checkbox" data-toggle="checkbox" <?=$this->inputValues($input['input_slug']) ? 'checked' : ''?>>
-					<?=$input['input_checkbox_name']?>
-				</label>
-
-				<label style="<?=$this->inputValues($input['input_slug']) ? '' : 'display: none;'?>">
-					<?=$input['input_name']?>
-                	<input
-                		class="form-control input-hg"
-                		style="width: 100px;"
-                		type="number"
-				    	name="t_<?=$input['input_slug']?>"
-				    	value="<?=$this->inputValues($input['input_slug']) ? $this->inputValues($input['input_slug']) : $input['input_value']?>"
-				    	min="0"
-				    	id="<?=$input['input_slug']?>"
-				    	<?=$this->inputValues($input['input_slug']) ? '' : 'disabled'?>
-                	>
-					<?=$input['input_description']?>
-				</label>
-
-
-			<?php
-
-				$inputNo++;
-
-			}
+			} // Input Loop
 			?>
 
 
+			</div> <!-- div.form-group -->
 
-		<?php
-		} // Input Loop
-		?>
-
-
-		</div>
+		</div> <!-- div.field -->
 
 <?php
 	$inputNo++;

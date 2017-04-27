@@ -27,6 +27,10 @@ class WebEstimator {
 		// Logout
 		if ( isset($_GET["logout"]) ) $this->logOut();
 
+		// AJAX Handler
+		if ( isset($_POST["ajax_action"]) )
+			$this->ajaxHandler($_POST);
+
 		// PRINT THE TEMPLATE
 		ob_start();
 		include('view/main.php');
@@ -68,7 +72,10 @@ class WebEstimator {
 
 
 	// == DB QUERY ==================================================
-	function dbQuery($query) {
+	function dbQuery($query, $prepare = false) {
+
+		if ($prepare)
+			return $this->db->prepare($query);
 
 		return $this->db->query($query);
 
@@ -78,6 +85,90 @@ class WebEstimator {
 	// == HOME PAGE URL ==================================================
 	function homePageURL() {
 		return "http://".$_SERVER["SERVER_NAME"].str_replace("/index.php", "", $_SERVER["PHP_SELF"]);
+	}
+
+
+	// == AJAX HANDLER ==================================================
+	function ajaxHandler($data) {
+
+		$response['success'] = false;
+
+		if ($data['ajax_action'] == 'update-time' && $this->userInfo('user_level') == 0) { // Admin Update Input Time
+
+			$stmt = $this->dbQuery("UPDATE inputs SET input_time='".$data['input_time']."' WHERE input_ID='".$data['input_ID']."'", true);
+			$stmt->execute();
+
+			$response['success'] = $stmt->rowCount() == 1 ? true : false;
+			$response['input_time'] = $data['input_time'];
+			$response['input_ID'] = $data['input_ID'];
+
+		} elseif ($data['ajax_action'] == 'duplicate-input' && $this->userInfo('user_level') == 0) { // Admin Duplicate an Input
+
+			// Prepare the duplicate data
+			$result = $this->dbQuery("SELECT * FROM inputs WHERE input_ID = ".$data['input_ID']." LIMIT 1");
+			$row = $result->fetch(PDO::FETCH_ASSOC);
+
+			$SQL = "INSERT INTO inputs (";
+
+			// Add the keys
+			$first = true;
+			foreach($row as $key => $val) {
+
+				if($key != "" && !is_numeric($key) && $key != 'input_ID' && $val != null) {
+
+					if (!$first) $SQL .= ', ';
+					$SQL .= $key;
+
+					$first = false;
+				}
+
+			}
+
+			$SQL .= ') VALUES (';
+
+			// Add the Values
+			$first = true;
+			foreach($row as $key => $val) {
+
+				if($key != "" && !is_numeric($key) && $key != 'input_ID' && $val != null) {
+
+					if (!$first) $SQL .= ', ';
+					if ($key == "input_slug") $val = $val."_new";
+					$SQL .= "'". addslashes($val)."'";
+
+					$first = false;
+				}
+
+			}
+
+			$SQL .= ')';
+
+
+
+			$stmt = $this->dbQuery($SQL, true);
+			$stmt->execute();
+
+			$response['success'] = $stmt->rowCount() == 1 ? true : false;
+			$response['input_ID'] = $data['input_ID'];
+
+			//$response['success'] = $SQL;
+
+		} elseif ($data['ajax_action'] == 'delete-input' && $this->userInfo('user_level') == 0) { // Admin Duplicate an Input
+
+			$stmt = $this->dbQuery("DELETE FROM inputs WHERE input_ID='".$data['input_ID']."'", true);
+			$stmt->execute();
+
+			$response['success'] = $stmt->rowCount() == 1 ? true : false;
+			$response['input_ID'] = $data['input_ID'];
+
+		} else {
+
+			$response['success'] = false;
+
+		}
+
+		echo json_encode($response);
+		die();
 	}
 
 
@@ -458,20 +549,27 @@ class WebEstimator {
 
 
 	// == INPUT TIME ==================================================
-	function inputTime($inputSlug, $inputValue = "", $singular = false) {
+	function inputTime($inputSlugOrID, $inputValue = "", $singular = false) {
 
-		$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_slug = '".$inputSlug."' LIMIT 1");
+		if ( is_numeric($inputSlugOrID) )
+			$sqlBeginning = "SELECT input_time FROM inputs WHERE input_ID = ".$inputSlugOrID;
+		else
+			$sqlBeginning = "SELECT input_time FROM inputs WHERE input_slug = '".$inputSlugOrID."'";
+
+		$stmt = $this->dbQuery("$sqlBeginning LIMIT 1");
 		$row = $stmt->fetch();
 
-		if ( !is_numeric($inputValue) ) {
-			$stmt = $this->dbQuery("SELECT input_time FROM inputs WHERE input_slug = '".$inputSlug."' AND input_value = '".$inputValue."' LIMIT 1");
+		if ( !is_numeric($inputValue) && !is_numeric($inputSlugOrID) ) {
+			$stmt = $this->dbQuery("$sqlBeginning AND input_value = '".$inputValue."' LIMIT 1");
 			$row = $stmt->fetch();
 
 			$time =  $row['input_time'];
 
 		} else {
+
 			if ( $singular ) $inputValue = 1;
 			$time =  intval($row['input_time']) * $inputValue;
+
 		}
 
 		return $time;
@@ -514,6 +612,56 @@ class WebEstimator {
 			return $row['input_short_name'];
 		else
 			return $row['input_name'];
+
+	}
+
+
+	// == INPUT ADMIN ==================================================
+	function inputAdmin($inputID) {
+
+		$output = "";
+
+
+		if ( $this->isLoggedIn() && $this->userInfo('user_level') == 0 ) {
+
+			$inputTime = $this->inputTime($inputID, "", true);
+
+			$output .= '
+				<span class="input-admin">
+
+					<span class="field update-time">
+						<span data-toggle="tooltip" title="Change and Press enter to update">
+							<input type="number" value="'.$inputTime.'"> minutes
+						</span>
+						<a href="#" data-toggle="tooltip" title="Update the time">
+							<span class="fui-time"></span>
+						</a>
+					</span>
+
+					<span class="field duplicate-input">
+						<a href="#" data-toggle="tooltip" data-title="Duplicate">
+							<span class="fui-windows"></span>
+						</a>
+					</span>
+
+					<span class="field edit-input">
+						<a href="#" data-toggle="tooltip" data-title="Edit">
+							<span class="fui-new"></span>
+						</a>
+					</span>
+
+					<span class="field delete-input">
+						<a href="#" data-toggle="tooltip" data-title="Delete">
+							<span class="fui-trash"></span>
+						</a>
+					</span>
+
+				</span>
+			';
+
+		}
+
+		return $output;
 
 	}
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 16, 2017 at 11:39 AM
+-- Generation Time: Apr 27, 2017 at 01:19 PM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -84,7 +84,7 @@ INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_short_name`
 (7, 'server', 'Other or not sure', 'Other or not sure', '', 'other', 1, 0, 40, 'radio', NULL, 2),
 (8, 'server', 'No, we will buy a new hosting', 'I don\'t have', '', 'no', 1, 0, 30, 'radio', NULL, 2),
 (9, 'static_pages', 'Home Page', 'Home Page', '', 'home', 1, 1, 360, 'checkbox', NULL, 3),
-(10, 'static_pages', 'About Us Page', 'About Page', '', 'about', 0, 0, 60, 'checkbox', NULL, 3),
+(10, 'static_pages', 'About Us Page', 'About Page', '', 'about', 0, 0, 65, 'checkbox', NULL, 3),
 (11, 'static_pages', 'Privacy Policy Page', 'Privacy Page', '', 'privacy', 0, 0, 40, 'checkbox', NULL, 3),
 (12, 'static_pages', 'Terms and Conditions Page', 'Terms Page', '', 'terms', 0, 0, 40, 'checkbox', NULL, 3),
 (13, 'static_pages', 'Contact Us Page', 'Contact Page', '', 'contact', 0, 0, 60, 'checkbox', NULL, 3),
@@ -106,7 +106,7 @@ INSERT INTO `inputs` (`input_ID`, `input_slug`, `input_name`, `input_short_name`
 (29, 'additional', 'Custom Under Construction Page', 'Coming Soon Page', 'Description', 'underconstruction', 0, 0, 360, 'checkbox', NULL, 10),
 (30, 'additional', 'Content Writing Service', 'Content', 'Description', 'content', 0, 0, 360, 'checkbox', NULL, 10),
 (31, 'additional', 'Social Media Management', 'Social Media', 'Description', 'social', 0, 0, 360, 'checkbox', NULL, 10),
-(32, 'additional', 'Speed Optimization', 'Speed', 'Description', 'speed', 0, 0, 360, 'checkbox', NULL, 10),
+(32, 'additional', 'Speed Optimization', 'Speed', 'Description', 'speed', 0, 0, 365, 'checkbox', NULL, 10),
 (33, 'additional', 'Organic Search Engine Optimization', 'SEO', 'Description', 'seo', 0, 0, 360, 'checkbox', NULL, 10),
 (34, 'additional', 'Marketing & Advertisement', 'Marketing & Ads', 'Description', 'ads', 0, 0, 360, 'checkbox', NULL, 10),
 (35, 'additional', 'Auto/Cloud Backup', 'Backup', 'Description', 'backup', 0, 0, 360, 'checkbox', NULL, 10),
@@ -262,7 +262,7 @@ ALTER TABLE `fields`
 -- AUTO_INCREMENT for table `inputs`
 --
 ALTER TABLE `inputs`
-  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 --
 -- AUTO_INCREMENT for table `main_choices`
 --

@@ -213,6 +213,10 @@ ul, li {
 	list-style-type: none;
 }
 
+label {
+	display: block;
+}
+
 
 /* MOBILE CORRECTIONS */
 @media only screen and (max-width: 990px) {
@@ -257,4 +261,15 @@ ul, li {
 
 .share-results a {
     margin: 0 20px;
+}
+
+
+/* Admin Management */
+.input-admin > .field > span {
+	display: none;
+}
+
+.input-admin > .field > span > input {
+	width: 60px;
+    padding: 0 3px;
 }
