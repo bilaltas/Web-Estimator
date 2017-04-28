@@ -49,7 +49,7 @@ if ( $this->stepSlug("concept") ) {
 } elseif ( $this->stepSlug("results") ) { // RESULTS PAGE ============================================
 
 	// IF ADMIN?
-	$showTimes = $this->userInfo('user_level') == 0 ? true : false;
+	$showTimes = $this->isAdmin() ? true : false;
 
 
 	// STEPS QUERY
@@ -74,7 +74,7 @@ if ( $this->stepSlug("concept") ) {
 
 
 	// Big Title
-	echo "<h2>Review Your Choices / Total Hours</h2>";
+	echo "<h2>Review Your Choices & Total</h2>";
 
 
 	// Concept Step
@@ -179,8 +179,36 @@ if ( $this->stepSlug("concept") ) {
 	}
 
 
-	echo "<br/><br/><br/><h1 style='text-align: center;'>TOTAL: ".$this->beautifyMinutes( $totalMinutes )."</h1>";
+	echo "<br/><br/><br/><h1 style='text-align: center;'>TOTAL</h1><h2 class='results'>";
 
+
+	echo "<b>".$this->beautifyMinutes( $totalMinutes )."</b> of work";
+
+	if ( $this->isAdmin() )
+		echo " (".$totalMinutes."m)";
+
+
+	if ( $this->isLoggedIn() && $this->userInfo('hourly_rate_currency') != "" )
+		$userID = "";
+	else
+		$userID = 1;
+
+
+	if ( $this->userInfo('daily_work_hours', $userID) != "" )
+		echo "<br/>Project will take <b>".(ceil(round( ($totalMinutes/60)/$this->userInfo('daily_work_hours', $userID), PHP_ROUND_HALF_UP)) + 1)." working days</b> to complete";
+
+
+	echo "<br/>Your project rate is <b>".sprintf($this->userInfo('hourly_rate_currency', $userID), ($totalMinutes/60)*$this->userInfo('hourly_rate', $userID))."</b>";
+
+
+	if ( $this->isAdmin() )
+		echo " (".sprintf($this->userInfo('hourly_rate_currency', $userID), $this->userInfo('hourly_rate', $userID))."/h)";
+
+
+	if ( $this->userInfo('discount_description', $userID) != "" )
+		echo "<br/><span class='discount-description'>".$this->userInfo('discount_description', $userID)."</span>";
+
+	echo "</h2><br/>";
 ?>
 
 <div class="share-results">

@@ -93,7 +93,7 @@ class WebEstimator {
 
 		$response['success'] = false;
 
-		if ($data['ajax_action'] == 'update-time' && $this->userInfo('user_level') == 0) { // Admin Update Input Time
+		if ($data['ajax_action'] == 'update-time' && $this->isAdmin()) { // Admin Update Input Time
 
 			$stmt = $this->dbQuery("UPDATE inputs SET input_time='".$data['input_time']."' WHERE input_ID='".$data['input_ID']."'", true);
 			$stmt->execute();
@@ -102,7 +102,7 @@ class WebEstimator {
 			$response['input_time'] = $data['input_time'];
 			$response['input_ID'] = $data['input_ID'];
 
-		} elseif ($data['ajax_action'] == 'duplicate-input' && $this->userInfo('user_level') == 0) { // Admin Duplicate an Input
+		} elseif ($data['ajax_action'] == 'duplicate-input' && $this->isAdmin()) { // Admin Duplicate an Input
 
 			// Prepare the duplicate data
 			$result = $this->dbQuery("SELECT * FROM inputs WHERE input_ID = ".$data['input_ID']." LIMIT 1");
@@ -153,7 +153,7 @@ class WebEstimator {
 
 			//$response['success'] = $SQL;
 
-		} elseif ($data['ajax_action'] == 'delete-input' && $this->userInfo('user_level') == 0) { // Admin Duplicate an Input
+		} elseif ($data['ajax_action'] == 'delete-input' && $this->isAdmin()) { // Admin Duplicate an Input
 
 			$stmt = $this->dbQuery("DELETE FROM inputs WHERE input_ID='".$data['input_ID']."'", true);
 			$stmt->execute();
@@ -236,11 +236,17 @@ class WebEstimator {
 	}
 
 
+	// == USER ADMIN? ==================================================
+	function isAdmin() {
+		return $this->isLoggedIn() && $this->userInfo('user_level') === 0 ? true : false;
+	}
+
+
 	// == CURRENT USER INFO ==================================================
 	function userInfo($info, $userID = "") {
 
-		if ( !$this->isLoggedIn() ) return false;
-		if ( $userID == "" ) $userID = $_SESSION['user_ID'];
+		if ( $this->isLoggedIn() && $userID == "" ) $userID = $_SESSION['user_ID'];
+		elseif ( !$this->isLoggedIn() && $userID == "" ) return false;
 
 		$stmt = $this->dbQuery("SELECT * FROM users WHERE user_ID='".$userID."' LIMIT 1");
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -253,7 +259,7 @@ class WebEstimator {
 	// == SHOW PAGE CONTENT ==================================================
 	function showContent() {
 
-		if ( $this->isLoggedIn() ) {
+/* 		if ( $this->isLoggedIn() ) { */
 
 			// STEP BAR
 			include("view/progress_bar.php");
@@ -261,11 +267,13 @@ class WebEstimator {
 			// SHOW Questions
 			include("view/step_content.php");
 
+/*
 		}else {
 
 			echo "<center><h1>WE ARE COMING SOON!</h1></center>";
 
 		}
+*/
 
 	}
 
@@ -622,7 +630,7 @@ class WebEstimator {
 		$output = "";
 
 
-		if ( $this->isLoggedIn() && $this->userInfo('user_level') == 0 ) {
+		if ( $this->isLoggedIn() && $this->isAdmin() ) {
 
 			$inputTime = $this->inputTime($inputID, "", true);
 

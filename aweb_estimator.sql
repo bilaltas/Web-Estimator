@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 27, 2017 at 01:19 PM
+-- Generation Time: Apr 28, 2017 at 07:20 AM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -200,17 +200,21 @@ CREATE TABLE `users` (
   `user_title` varchar(10) NOT NULL,
   `user_first_name` varchar(100) NOT NULL,
   `user_last_name` varchar(60) NOT NULL,
-  `user_level` int(10) NOT NULL
+  `user_level` int(10) NOT NULL,
+  `daily_work_hours` int(3) NOT NULL,
+  `hourly_rate` int(5) NOT NULL,
+  `hourly_rate_currency` varchar(5) NOT NULL,
+  `discount_description` varchar(300) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_ID`, `user_name`, `user_email`, `user_password`, `user_title`, `user_first_name`, `user_last_name`, `user_level`) VALUES
-(1, 'bilal', 'bilaltas@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Bilal', 'TAŞ', 0),
-(2, 'kubilay', 'oren.kubilay@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Kubilay', 'Ören', 1),
-(3, 'murat', 'kubilay.bicakci@outlook.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Murat Kubilay', 'Bıçakçı', 1);
+INSERT INTO `users` (`user_ID`, `user_name`, `user_email`, `user_password`, `user_title`, `user_first_name`, `user_last_name`, `user_level`, `daily_work_hours`, `hourly_rate`, `hourly_rate_currency`, `discount_description`) VALUES
+(1, 'bilal', 'bilaltas@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Bilal', 'TAŞ', 0, 8, 60, '$%d', '*You can adjust the features above according to your budget.'),
+(2, 'kubilay', 'oren.kubilay@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Kubilay', 'Ören', 1, 6, 70, '%d TL', '*This rate is special for you.'),
+(3, 'murat', 'kubilay.bicakci@outlook.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Murat Kubilay', 'Bıçakçı', 1, 0, 0, '', '');
 
 --
 -- Indexes for dumped tables
@@ -262,7 +266,7 @@ ALTER TABLE `fields`
 -- AUTO_INCREMENT for table `inputs`
 --
 ALTER TABLE `inputs`
-  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 --
 -- AUTO_INCREMENT for table `main_choices`
 --
