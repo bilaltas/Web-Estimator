@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>Web Estimator <?= $_SERVER["QUERY_STRING"] == "" ? "- BETA" : ( $this->stepNo() == "" ? "" : "- ".$this->stepNo()."." )." ".$this->stepTitle() ?></title>
     <meta name="description" content="Web Estimator clearly calculates cost and time to build any website project for free in a few minutes."/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	    <!-- Loading Bootstrap -->
 	    <link href="css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+	    <!-- Loading Fonts
+	    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,900&amp;subset=latin-ext" rel="stylesheet"> -->
 
 	    <!-- Loading Flat UI -->
 	    <link href="css/flat-ui.css" rel="stylesheet">

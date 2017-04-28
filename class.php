@@ -14,10 +14,21 @@ class WebEstimator {
 
 		session_start();
 
-		// SSL redirect if not on development mode
-		if ( substr($_SERVER["SERVER_NAME"], 0, 4) != "dev." && !$this->isSSL() ) {
-			header( 'Location: '.$this->currentPageURL("", true) );
-			die();
+		// If not on development mode
+		if ( substr($_SERVER["SERVER_NAME"], 0, 4) != "dev." ) {
+
+			// Force SSL
+			if ( !$this->isSSL() ) {
+				header( 'Location: '.$this->currentPageURL("", true) );
+				die();
+			}
+
+			// Force WWW
+			if ( substr($_SERVER["SERVER_NAME"], 0, 4) != "www." ) {
+				header( 'Location: '.$this->currentPageURL("", true, true) );
+				die();
+			}
+
 		}
 
 		// DB Connect
@@ -55,9 +66,8 @@ class WebEstimator {
 		$conn_error = "";
 		try {
 		    $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
-		    // set the PDO error mode to exception
 		    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		    //echo "Connected successfully";
+		    $conn->query("SET NAMES 'utf8'");
 		}
 		catch(PDOException $e) {
 			$conn_error = "Connection failed: " . $e->getMessage();
@@ -179,16 +189,22 @@ class WebEstimator {
 
 
 	// == CURRENT PAGE URL ==================================================
-	function currentPageURL($add = "", $forceSSL = false) {
+	function currentPageURL($add = "", $forceSSL = false, $forceWWW = false) {
 
 		$pageURL = 'http';
 
-		if ( (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") || $forceSSL ) $pageURL .= "s";
+		if ( (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") || $forceSSL )
+			$pageURL .= "s";
 
 		$pageURL .= "://";
 
-		if ($_SERVER["SERVER_PORT"] != "80") $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-		else $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+		if ( $forceWWW && substr($_SERVER["SERVER_NAME"], 0, 4) != "www." )
+			$pageURL .= "www.";
+
+		if ($_SERVER["SERVER_PORT"] != "80" && $_SERVER["SERVER_PORT"] != "443")
+			$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+		else
+			$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
 
 		if ($add != "") {
 			if ( strpos($pageURL,'?') == false ) { $pageURL .= "?".$add; } else { $pageURL .= "&".$add; }
