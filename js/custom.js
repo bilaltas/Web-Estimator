@@ -67,7 +67,6 @@ $(function () { // Document is ready
 				success: function(data) {
 					if (data.success) {
 						input_to_hide.toggle();
-						console.log(data);
 					} else
 						console.log(data);
 				},
@@ -97,7 +96,6 @@ $(function () { // Document is ready
 			dataType:'json',
 			success: function(data) {
 				if (data.success == true) {
-					console.log('SUCCESS');
 					location.reload();
 				} else
 					console.log(data);
@@ -116,27 +114,30 @@ $(function () { // Document is ready
 	// Admin Delete Inputs
 	$('.input-admin > span.field.delete-input > a').click(function (e){
 
-		var realInput = $(this).parent().parent().parent().children('input');
-		var inputID = realInput.attr('id');
+		if ( confirm("Are you sure you want to delete this option?") ) {
 
-		var data = { ajax_action: "delete-input", input_ID: inputID };
+			var realInput = $(this).parent().parent().parent().children('input');
+			var inputID = realInput.attr('id');
 
-	    $.ajax({
-			type: "POST",
-			url: "/",
-			data: data,
-			dataType:'json',
-			success: function(data) {
-				if (data.success == true) {
-					console.log('SUCCESS');
-					location.reload();
-				} else
-					console.log(data);
-			},
-			error : function(request,error) {
-		        console.log(JSON.stringify(request));
-		    }
-		});
+			var data = { ajax_action: "delete-input", input_ID: inputID };
+
+		    $.ajax({
+				type: "POST",
+				url: "/",
+				data: data,
+				dataType:'json',
+				success: function(data) {
+					if (data.success == true) {
+						location.reload();
+					} else
+						console.log(data);
+				},
+				error : function(request,error) {
+			        console.log(JSON.stringify(request));
+			    }
+			});
+
+		}
 
 		e.preventDefault();
         return false;

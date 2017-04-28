@@ -2,10 +2,11 @@
 
 * Check the duplication rules
 * Admin management on
-	* Choices
-	* Steps
+	* Inputs
+		* Edit Button
 	* Fields
-	* Inputs(DONE)
+	* Steps
+	* Choices
 	* Hourly Rate
 	* Daily Work Hours
 	* Discount Description

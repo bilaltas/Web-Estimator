@@ -260,7 +260,7 @@ class WebEstimator {
 
 	// == USER ADMIN? ==================================================
 	function isAdmin() {
-		return $this->isLoggedIn() && $this->userInfo('user_level') === 0 ? true : false;
+		return $this->isLoggedIn() && $this->userInfo('user_level') == 0 ? true : false;
 	}
 
 
@@ -666,7 +666,7 @@ class WebEstimator {
 
 					<span class="field update-time">
 						<span data-toggle="tooltip" title="Change and Press enter to update">
-							<input type="number" value="'.$inputTime.'"> minutes
+							<input type="number" value="'.$inputTime.'" class="form-control"> minutes
 						</span>
 						<a href="#" data-toggle="tooltip" title="Update the time">
 							<span class="fui-time"></span>

@@ -313,7 +313,7 @@ if ( $this->stepSlug("concept") ) {
 					    	<?=$input['input_required'] ? 'required' : ''?>
 					    >
 					    <?=$input['input_name']?>
-						<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
+						<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top"><span class="fui-question-circle"></span></a>' : '' ?>
 						<?=$this->inputAdmin($input['input_ID'])?>
 					</label>
 
@@ -356,7 +356,7 @@ if ( $this->stepSlug("concept") ) {
 					    	<?=$input['input_disabled'] ? 'disabled '.($input['input_required'] ? 'checked' : '') : ''?>
 	                	>
 						<?=$input['input_name']?>
-						<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top">(?)</a>' : '' ?>
+						<?=$input['input_description'] != "" ? '<a title="'.$input['input_description'].'" data-toggle="tooltip" data-placement="top"><span class="fui-question-circle"></span></a>' : '' ?>
 						<?=$this->inputAdmin($input['input_ID'])?>
 					</label>
 

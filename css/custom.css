@@ -270,8 +270,12 @@ label {
 }
 
 .input-admin > .field > span > input {
-	width: 60px;
+	width: 52px;
+    height: auto;
     padding: 0 3px;
+    display: inline-block;
+    line-height: 18px;
+    font-size: 12px;
 }
 
 .discount-description {
