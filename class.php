@@ -100,7 +100,7 @@ class WebEstimator {
 
 	// == HOME PAGE URL ==================================================
 	function homePageURL() {
-		return "http://".$_SERVER["SERVER_NAME"].str_replace("/index.php", "", $_SERVER["PHP_SELF"]);
+		return "http".($this->isSSL() ? "s" : "")."://".$_SERVER["SERVER_NAME"].str_replace("/index.php", "", $_SERVER["PHP_SELF"]);
 	}
 
 

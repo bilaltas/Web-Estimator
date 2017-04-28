@@ -9,7 +9,7 @@
 
             <p>Do you like this freebie? Want to get more stuff like this?<br>
               Subscribe to WebEstimator news and updates to stay tuned on great deals.<br><br>
-              Go to: <a href="<?=$this->homePageURL()?>" target="_blank">http://web-estimator.com/</a>
+              Go to: <a href="<?=$this->homePageURL()?>" target="_blank"><?=$this->homePageURL()?>/</a>
             </p>
 
             <a class="footer-brand" href="<?=$this->homePageURL()?>" target="_blank">
