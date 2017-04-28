@@ -248,31 +248,6 @@ if ( $this->stepSlug("concept") ) {
 </div>
 <?php
 
-	/*
-
-		TO-DO:
-
-		* Check the duplication rules
-		* Admin management on Choices, Steps, Fields, Inputs(DONE), ...
-		* Create a Settings Page:
-			* Daily work hours
-			* Hourly Rate and Currency
-		* Calculate the deadline!! (By adding daily work hours!)
-		* $ calculation with hourly rate (By adding hourly rate!)
-		* Ask a rate to calculate?
-
-
-		Description:
-
-		1. Install the script to your server
-		2. Customize services and steps
-		3. Enter your hourly rate and daily work hours
-
-		and it's ready to serve!
-
-	*/
-
-
 	// ALL ANSWERS FOR DEBUGGING
 	//echo "<pre>".print_r($results, true)."</pre>";
 /*

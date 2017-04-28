@@ -14,6 +14,12 @@ class WebEstimator {
 
 		session_start();
 
+		// SSL redirect if not on development mode
+		if ( substr($_SERVER["SERVER_NAME"], 0, 4) != "dev." && !$this->isSSL() ) {
+			header( 'Location: '.$this->currentPageURL("", true) );
+			die();
+		}
+
 		// DB Connect
 		$this->db = $this->dbConnect();
 
@@ -173,11 +179,11 @@ class WebEstimator {
 
 
 	// == CURRENT PAGE URL ==================================================
-	function currentPageURL($add = "") {
+	function currentPageURL($add = "", $forceSSL = false) {
 
 		$pageURL = 'http';
 
-		if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") $pageURL .= "s";
+		if ( (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") || $forceSSL ) $pageURL .= "s";
 
 		$pageURL .= "://";
 
@@ -242,6 +248,12 @@ class WebEstimator {
 	}
 
 
+	// == SSL MODE? ==================================================
+	function isSSL() {
+		return isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? true : false;
+	}
+
+
 	// == CURRENT USER INFO ==================================================
 	function userInfo($info, $userID = "") {
 
@@ -259,7 +271,12 @@ class WebEstimator {
 	// == SHOW PAGE CONTENT ==================================================
 	function showContent() {
 
-/* 		if ( $this->isLoggedIn() ) { */
+		if ( isset($_GET['error']) ) {
+
+			echo "<h1 style='text-align: center;'>Username or password is wrong</h1>";
+			echo "<h3 style='text-align: center;'>Please try again</h3>";
+
+		} else {
 
 			// STEP BAR
 			include("view/progress_bar.php");
@@ -267,13 +284,7 @@ class WebEstimator {
 			// SHOW Questions
 			include("view/step_content.php");
 
-/*
-		}else {
-
-			echo "<center><h1>WE ARE COMING SOON!</h1></center>";
-
 		}
-*/
 
 	}
 
