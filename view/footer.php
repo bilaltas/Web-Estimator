@@ -7,9 +7,10 @@
             <h3 class="footer-title">Subscribe</h3>
 
 
-            <p>Do you like this freebie? Want to get more stuff like this?<br>
+            <p>
+	          Do you like this freebie? Want to get more stuff like this?<br>
               Subscribe to WebEstimator news and updates to stay tuned on great deals.<br><br>
-              Go to: <a href="<?=$this->homePageURL()?>" target="_blank"><?=$this->homePageURL()?>/</a>
+              <a href="https://github.com/bilaltas/Web-Estimator" target="_blank">https://github.com/bilaltas/Web-Estimator</a>
             </p>
 
             <a class="footer-brand" href="<?=$this->homePageURL()?>" target="_blank">
@@ -84,7 +85,7 @@ Then, I will help you on the last step.
     <!-- jQuery (necessary for Flat UI's JavaScript plugins) -->
     <script src="js/vendor/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/flat-ui.min.js"></script>
+    <script src="js/vendor/flat-ui.min.js"></script>
     <!-- Custom JS -->
     <script src="js/custom.js"></script>
 

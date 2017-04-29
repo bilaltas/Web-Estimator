@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 28, 2017 at 07:20 AM
+-- Generation Time: Apr 29, 2017 at 10:24 PM
 -- Server version: 5.6.34
 -- PHP Version: 7.1.0
 
@@ -213,7 +213,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_ID`, `user_name`, `user_email`, `user_password`, `user_title`, `user_first_name`, `user_last_name`, `user_level`, `daily_work_hours`, `hourly_rate`, `hourly_rate_currency`, `discount_description`) VALUES
 (1, 'bilal', 'bilaltas@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Bilal', 'TAŞ', 0, 8, 60, '$%d', '*You can adjust the features above according to your budget.'),
-(2, 'kubilay', 'oren.kubilay@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Kubilay', 'Ören', 1, 6, 70, '%d TL', '*This rate is special for you.'),
+(2, 'kubilay', 'oren.kubilay@me.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Kubilay', 'Ören', 1, 6, 70, '₺%d', '*This rate is special for you.'),
 (3, 'murat', 'kubilay.bicakci@outlook.com', '$2y$10$eeUBAjuE05eBTwUxlNEAZ.4aKMCkRrrZevnjHEmdpwXWrF7cdc/uG', 'Mr.', 'Murat Kubilay', 'Bıçakçı', 1, 0, 0, '', '');
 
 --
@@ -266,7 +266,7 @@ ALTER TABLE `fields`
 -- AUTO_INCREMENT for table `inputs`
 --
 ALTER TABLE `inputs`
-  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `input_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 --
 -- AUTO_INCREMENT for table `main_choices`
 --
